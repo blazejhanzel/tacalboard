@@ -1,6 +1,12 @@
 services:
   node:
     image: node:24-slim
-    entrypoint: sh
+    container_name: tacalboard_node-dev
+    entrypoint: bash
+    stdin_open: true
+    tty: true
+    working_dir: /mnt
     volumes:
-      - ./src:/src
+      - ./:/mnt:z
+    ports:
+      - "5173:5173"
