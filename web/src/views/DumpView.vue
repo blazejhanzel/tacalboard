@@ -127,7 +127,7 @@ async function addNote() {
 </script>
 
 <template>
-  <div class="card shadow mt-3 mb-3" :class="{ editing: isWritingDumpNote }" id="dump-composer">
+  <div class="card shadow" :class="{ editing: isWritingDumpNote }" id="dump-composer">
     <div class="card-body p-0 d-flex">
       <textarea
         v-model="newNote"
@@ -144,7 +144,7 @@ async function addNote() {
       <button class="btn rounded-2 p-3" @mousedown="isClickingSendButton = true" @click="addNote"><i class="bi bi-send-fill text-body-emphasis"></i></button>
     </div>
   </div>
-  <div class="d-grid gap-3">
+  <div class="d-grid gap-3 mt-3">
     <NoteCard
       v-for="note in notes"
       :key="note.id"

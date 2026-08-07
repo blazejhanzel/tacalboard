@@ -9,7 +9,7 @@ import FloatingButton from "@/components/FloatingButton.vue"
   <div class="app">
     <Header />
   
-    <main class="container pt-2 pb-2" id="content">
+    <main class="container pt-3 pb-3" id="content">
       <RouterView />
     </main>
 
