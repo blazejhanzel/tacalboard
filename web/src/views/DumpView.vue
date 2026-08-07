@@ -83,10 +83,19 @@ const isWritingDumpNote = ref(false)
 const isClickingSendButton = ref(false)
 
 function autoResize() {
-  if (!dumpTextarea.value) return
+  const el = dumpTextarea.value
 
-  dumpTextarea.value.style.height = "0px";
-  dumpTextarea.value.style.height = dumpTextarea.value.scrollHeight + "px";
+  if (!el) return
+
+  const maxHeight = window.innerHeight * 0.4
+
+  // Reset wysokości, aby poprawnie obliczyć nowy scrollHeight.
+  el.style.height = 'auto'
+
+  // Dopasuj wysokość do aktualnej zawartości.
+  el.style.height = `${el.scrollHeight}px`
+  
+  el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
 }
 
 function handleBlur() {
@@ -110,6 +119,7 @@ async function addNote() {
 
   newNote.value = ''
   isWritingDumpNote.value = false
+  isClickingSendButton.value = false
   
   await nextTick()
   autoResize()
@@ -146,7 +156,8 @@ async function addNote() {
 <style>
 #dump-textarea {
   resize: none;
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: 40vh; /* lub np. 250px */
 }
 
 #dump-composer {
@@ -157,7 +168,7 @@ async function addNote() {
 
 #dump-composer.editing {
   position: fixed;
-  bottom: 0;
+  bottom: calc(var(--bottom-navbar-height) + env(safe-area-inset-bottom));
   left: 0;
   right: 0;
   top: auto;
