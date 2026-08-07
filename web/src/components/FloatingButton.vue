@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-primary btn-lg end-0 m-3 shadow-sm rounded-4" id="fab" style="--bs-btn-bg: var(--bs-primary-bg-subtle); --bs-btn-border-color: var(--bs-primary-bg-subtle);">
+  <button type="button" class="btn btn-primary btn-lg end-0 m-3 shadow-sm rounded-4" id="fab">
     <i class="bi bi-pencil-fill"></i>
     </button>
 </template>
@@ -22,5 +22,9 @@
 
 #fab i {
     font-size: clamp(24px, 4vw, 36px);
+}
+
+[data-custom-theme="frappe"] #fab {
+  color: color-mix(in srgb, var(--ctp-blue), black 65%);
 }
 </style>

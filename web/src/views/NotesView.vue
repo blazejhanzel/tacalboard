@@ -2,7 +2,5 @@
 </script>
 
 <template>
-  <main>
-    Notes
-  </main>
+  Notes
 </template>

@@ -13,7 +13,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-body-tertiary p-2" id="bottom-navbar">
+  <div class="bg-secondary p-2" id="bottom-navbar">
     <nav class="container nav nav-pills nav-fill p-1 small" id="navbar" role="tablist" style="--bs-nav-link-color: var(--bs-emphasis); --bs-nav-pills-link-active-color: var(--bs-emphasis); --bs-nav-pills-link-active-bg: var(--bs-primary-bg-subtle);">
       <RouterLink to="/" class="nav-link rounded-5" id="stickies-tab" active-class="active">
         <i class="bi bi-stickies d-block mx-3 fs-5"></i>

@@ -1,0 +1,58 @@
+/* Catppuccin Frappe Theme for Bootstrap 5 */
+
+/* Color Variables */
+[data-custom-theme="frappe"] {
+  --ctp-rosewater: #f2d5cf;
+  --ctp-flamingo: #eebebe;
+  --ctp-pink: #f4b8e4;
+  --ctp-mauve: #ca9ee6;
+  --ctp-red: #e78284;
+  --ctp-maroon: #ea999c;
+  --ctp-peach: #ef9f76;
+  --ctp-yellow: #e5c890;
+  --ctp-green: #a6d189;
+  --ctp-teal: #81c8be;
+  --ctp-sky: #99d1db;
+  --ctp-sapphire: #85c1dc;
+  --ctp-blue: #8caaee;
+  --ctp-lavender: #babbf1;
+  --ctp-text: #c6d0f5;
+  --ctp-subtext1: #b5bfe2;
+  --ctp-subtext0: #a5adce;
+  --ctp-overlay2: #949cbb;
+  --ctp-overlay1: #838ba7;
+  --ctp-overlay0: #737994;
+  --ctp-surface2: #626880;
+  --ctp-surface1: #51576d;
+  --ctp-surface0: #414559;
+  --ctp-base: #303446;
+  --ctp-mantle: #292c3c;
+  --ctp-crust: #232634;
+}
+
+/* Bootstrap Color Overrides */
+[data-custom-theme="frappe"] {
+  --bs-primary: var(--ctp-blue);
+  --bs-secondary: var(--ctp-surface1);
+  --bs-success: var(--ctp-green);
+  --bs-info: var(--ctp-sky);
+  --bs-warning: var(--ctp-yellow);
+  --bs-danger: var(--ctp-red);
+  --bs-light: var(--ctp-surface0);
+  --bs-dark: var(--ctp-crust);
+
+  --bs-primary-rgb: 140, 170, 238;
+  --bs-secondary-rgb: 81, 87, 109;
+  --bs-success-rgb: 166, 209, 137;
+  --bs-info-rgb: 153, 209, 219;
+  --bs-warning-rgb: 229, 200, 144;
+  --bs-danger-rgb: 231, 130, 132;
+  --bs-light-rgb: 65, 69, 89;
+  --bs-dark-rgb: 35, 38, 52;
+
+  --bs-body-bg: var(--ctp-base);
+  --bs-body-color: var(--ctp-text);
+  --bs-border-color: var(--ctp-surface0);
+  --bs-link-color: var(--ctp-blue);
+  --bs-link-hover-color: var(--ctp-sapphire);
+}

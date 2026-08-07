@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
 import { computed, ref } from "vue"
 
 const theme = ref("light")
+const customTheme = ref("latte")
 
 const themeIcon = computed(() =>
   theme.value === "light"
@@ -11,17 +11,16 @@ const themeIcon = computed(() =>
 )
 
 function toggleTheme() {
-  theme.value =
-    theme.value === "light"
-      ? "dark"
-      : "light"
+  theme.value = theme.value === "light" ? "dark" : "light"
+  customTheme.value = customTheme.value === "latte" ? "frappe" : "latte"
 
   document.documentElement.setAttribute('data-bs-theme', theme.value)
+  document.documentElement.setAttribute('data-custom-theme', customTheme.value)
 }
 </script>
 
 <template>
-  <nav class="navbar bg-body-tertiary navbar-expand-lg p-2" id="header">
+  <header class="navbar bg-secondary navbar-expand-lg p-2" id="header">
     <div class="container-fluid gap-2">
       <a class="navbar-brand me-auto">Tacalboard</a>
       <!-- <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0">
@@ -39,5 +38,5 @@ function toggleTheme() {
         <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
       </a>
     </div>
-  </nav>
+  </header>
 </template>
