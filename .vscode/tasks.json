@@ -6,7 +6,7 @@
         {
             "label": "Connect to container",
             "type": "shell",
-            "command": "flatpak-spawn --host podman run -it --rm --entrypoint bash --workdir /mnt -p 5173:5173 -v ./:/mnt:z node:24-slim"
+            "command": "flatpak-spawn --host podman run -it --rm --entrypoint bash --workdir /mnt -p 5173:5173 -p 4173:4173 -v ./:/mnt:z node:24-slim"
         }
     ]
 }
