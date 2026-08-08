@@ -17,7 +17,7 @@ export default defineConfig({
         name: 'Tacalboard',
         short_name: 'Tacalboard',
         description: 'Quick capture notes and tasks',
-        theme_color: '#eff1f5',
+        theme_color: '#dce0e8',
         background_color: '#eff1f5',
         display: 'standalone',
         start_url: '/',

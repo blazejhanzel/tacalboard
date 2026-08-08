@@ -16,7 +16,24 @@ const html = computed(() => md.render(props.text))
 
 <template>
   <div class="card shadow-sm">
-    <div class="card-body" v-html="html"></div>
+    <div class="card-header p-1 ps-3 d-flex border-0">
+      <div class="w-100 align-self-center text-body-secondary">
+        Featured
+      </div>
+      <div class="flex-shrink-1">
+        <div class="btn-group">
+          <button type="button" class="btn icon-button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical text-body-emphasis"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><button class="dropdown-item" type="button">Action</button></li>
+            <li><button class="dropdown-item" type="button">Another action</button></li>
+            <li><button class="dropdown-item" type="button">Something else here</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card-body pt-0" v-html="html"></div>
   </div>
 </template>
 

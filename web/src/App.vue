@@ -12,7 +12,7 @@ import FloatingButton from "@/components/FloatingButton.vue"
     <main class="container pt-3 pb-3" id="content">
       <RouterView />
     </main>
-
+    
     <Navbar />
   </div>
 </template>

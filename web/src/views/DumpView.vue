@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import NoteCard from "@/components/NoteCard.vue"
 
 const notes = ref([
@@ -124,14 +124,18 @@ async function addNote() {
   await nextTick()
   autoResize()
 }
+
+onMounted(() => {
+  autoResize();
+})
 </script>
 
 <template>
-  <div class="card shadow" :class="{ editing: isWritingDumpNote }" id="dump-composer">
+  <div class="card shadow bg-secondary" :class="{ editing: isWritingDumpNote }" id="dump-composer">
     <div class="card-body p-0 d-flex">
       <textarea
         v-model="newNote"
-        class="form-control p-3 border-0 shadow-none"
+        class="form-control p-3 border-0 shadow-none w-100 align-self-center bg-secondary"
         id="dump-textarea"
         ref="dumpTextarea"
         rows="1"
@@ -139,9 +143,11 @@ async function addNote() {
         @keydown.ctrl.enter.prevent="addNote"
         @focus="isWritingDumpNote = true"
         @blur="handleBlur"
-        placeholder="Note anything you need to remember...">
+        placeholder="Capture a thought... ">
       </textarea>
-      <button class="btn rounded-2 p-3" @mousedown="isClickingSendButton = true" @click="addNote"><i class="bi bi-send-fill text-body-emphasis"></i></button>
+      <div class="flex-shrink-1 align-self-center p-3">
+        <button class="btn icon-button" @mousedown="isClickingSendButton = true" @click="addNote"><i class="bi bi-send-fill text-body-emphasis"></i></button>
+      </div>
     </div>
   </div>
   <div class="d-grid gap-3 mt-3">
@@ -153,13 +159,7 @@ async function addNote() {
   </div>
 </template>
 
-<style>
-#dump-textarea {
-  resize: none;
-  overflow-y: auto;
-  max-height: 40vh; /* lub np. 250px */
-}
-
+<style scoped>
 #dump-composer {
   position: sticky;
   top: 0;
@@ -180,5 +180,11 @@ async function addNote() {
     position: sticky;
     top: 0;
   }
+}
+
+#dump-textarea {
+  resize: none;
+  overflow-y: auto;
+  max-height: 40vh; /* lub np. 250px */
 }
 </style>
