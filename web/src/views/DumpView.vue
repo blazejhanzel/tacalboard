@@ -131,11 +131,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card shadow bg-secondary" :class="{ editing: isWritingDumpNote }" id="dump-composer">
+  <div class="card" :class="{ editing: isWritingDumpNote }" id="dump-composer">
     <div class="card-body p-0 d-flex">
       <textarea
         v-model="newNote"
-        class="form-control p-3 border-0 shadow-none w-100 align-self-center bg-secondary"
+        class="form-control p-3 border-0 shadow-none w-100 align-self-center"
         id="dump-textarea"
         ref="dumpTextarea"
         rows="1"
@@ -146,7 +146,7 @@ onMounted(() => {
         placeholder="Capture a thought... ">
       </textarea>
       <div class="flex-shrink-1 align-self-center p-3">
-        <button class="btn icon-button" @mousedown="isClickingSendButton = true" @click="addNote"><i class="bi bi-send-fill text-body-emphasis"></i></button>
+        <button class="btn tcb-icon-button" @mousedown="isClickingSendButton = true" @click="addNote"><i class="bi bi-send-fill"></i></button>
       </div>
     </div>
   </div>
@@ -162,8 +162,11 @@ onMounted(() => {
 <style scoped>
 #dump-composer {
   position: sticky;
-  top: 0;
+  top: 16px;
   z-index: 1030;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 10%),
+    0 1px 3px rgb(0 0 0 / 8%);
 }
 
 #dump-composer.editing {
@@ -178,7 +181,7 @@ onMounted(() => {
 @media (min-width: 768px) {
   #dump-composer.editing {
     position: sticky;
-    top: 0;
+    top: 16px;
   }
 }
 
@@ -186,5 +189,14 @@ onMounted(() => {
   resize: none;
   overflow-y: auto;
   max-height: 40vh; /* lub np. 250px */
+}
+
+#dump-composer, #dump-textarea {
+  background-color: var(--md-sys-color-surface-container-low);
+}
+
+.tcb-icon-button i {
+  color: var(--md-sys-color-primary);
+  font-size: 24px;
 }
 </style>

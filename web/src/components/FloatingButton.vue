@@ -5,7 +5,7 @@
 </template>
 
 <style scoped>
-:root {
+/* :root {
     --bottom-navbar-height: 0px;
 }
 
@@ -38,5 +38,5 @@
   --bs-btn-hover-bg: color-mix(in srgb, var(--ctp-blue), black 8%);
   --bs-btn-focus-bg: color-mix(in srgb, var(--ctp-blue), black 18%);
   --bs-btn-active-bg: color-mix(in srgb, var(--ctp-blue), black 18%);
-}
+} */
 </style>

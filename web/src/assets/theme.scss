@@ -1,67 +1,96 @@
 @import "bootstrap/scss/bootstrap";
 
-@import "catppuccin/latte.css";
-@import "catppuccin/frappe.css";
+// @import "catppuccin/latte.css";
+// @import "catppuccin/frappe.css";
 
+@import "material-theme/light.css";
+@import "material-theme/dark.css";
+
+
+body {
+  background-color: var(--md-sys-color-surface);
+}
 
 :root {
-  --bs-body-bg: var(--ctp-base);
-  --bs-secondary-bg: var(--ctp-mantle);
-  --bs-tertiary-bg: var(--ctp-mantle);
+  --bs-body-bg: var(--md-sys-color-background);
 }
 
-[data-custom-theme="latte"] {
-  --bs-body-bg-rgb: 239, 241, 245;
-  --bs-secondary-bg-rgb: 230, 233, 239;
-  --bs-tertiary-bg-rgb: 220, 224, 232;
-
-  --bs-primary-bg-subtle: color-mix(in srgb, var(--ctp-blue), white 60%);
+[data-md-theme="light"] {
+  --bs-body-bg-rgb: 255, 249, 236;
 }
 
-[data-custom-theme="frappe"] {
-  --bs-body-bg-rgb: 48, 52, 70;
-  --bs-secondary-bg-rgb: 41, 44, 60;
-  --bs-tertiary-bg-rgb: 35, 38, 53;
-
-  --bs-primary-bg-subtle: color-mix(in srgb, var(--ctp-blue), black 60%);
-}
-
-.bg-secondary {
-  background-color: rgba(var(--bs-secondary-bg-rgb), var(--bs-bg-opacity)) !important;
-}
-
-.bg-tertiary {
-  background-color: rgba(var(--bs-tertiary-bg-rgb), 1) !important;
+[data-md-theme="dark"] {
+  --bs-body-bg-rgb: 21, 19, 12;
 }
 
 .btn {
   border: 0;
-
-  --bs-btn-color: black;
-  --bs-btn-hover-color: black;
-  --bs-btn-focus-color: black;
-  --bs-btn-active-color: black;
-  
-  --bs-btn-bg: transparent;
-  --bs-btn-hover-bg: color-mix(in srgb, var(--ctp-crust), black 8%);
-  --bs-btn-focus-bg: color-mix(in srgb, var(--ctp-crust), black 18%);
-  --bs-btn-active-bg: color-mix(in srgb, var(--ctp-crust), black 18%);
 }
 
-.card-header {
-  --bs-card-cap-bg: var(--ctp-base);
+.btn:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 8%,
+    transparent
+  );
+}
+
+.btn:active, .btn:first-child:active, .btn:focus-visible  {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 10%,
+    transparent
+  ) !important;
 }
 
 .dropdown-item:hover {
-  background-color: var(--ctp-mantle);
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 8%,
+    transparent
+  );
+}
+
+.dropdown-item:active, .dropdown-item:focus, .dropdown-item:focus-visible  {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 10%,
+    transparent
+  ) !important;
 }
 
 /* Custom classes */
 
-.icon-button {
-  min-width: 32px;
-  min-height: 32px;
-  aspect-ratio: 1;
-  border-radius: var(--bs-border-radius-xxl) !important;
+.tcb-icon-button {
+  --tcb-ib-button-size: 40px;
+  --tcb-ib-icon-size: 24px;
+
+  width: var(--tcb-ib-button-size);
+  height: var(--tcb-ib-button-size);
   padding: 0;
+  border-radius: var(--bs-border-radius-xxl) !important;
+}
+
+.tcb-icon-button svg {
+  width: var(--tcb-ib-icon-size);
+  height: var(--tcb-ib-icon-size);
+}
+
+.tcb-icon-button-xs {
+  --tcb-ib-button-size: 26px;
+  --tcb-ib-icon-size: 20px;
+}
+
+.tcb-icon-button-s {
+  --tcb-ib-button-size: 32px;
+}
+
+.tcb-icon-button-l {
+  --tcb-ib-button-size: 64px;
+  --tcb-ib-icon-size: 32px;
+}
+
+.tcb-icon-button-xl {
+  --tcb-ib-button-size: 88px;
+  --tcb-ib-icon-size: 40px;
 }

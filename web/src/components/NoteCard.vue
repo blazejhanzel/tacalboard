@@ -15,15 +15,17 @@ const html = computed(() => md.render(props.text))
 </script>
 
 <template>
-  <div class="card shadow-sm">
+  <div class="card">
     <div class="card-header p-1 ps-3 d-flex border-0">
       <div class="w-100 align-self-center text-body-secondary">
         Featured
       </div>
       <div class="flex-shrink-1">
         <div class="btn-group">
-          <button type="button" class="btn icon-button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-            <i class="bi bi-three-dots-vertical text-body-emphasis"></i>
+          <button type="button" class="btn tcb-icon-button tcb-icon-button-s" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+              <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+            </svg>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><button class="dropdown-item" type="button">Action</button></li>
@@ -38,6 +40,10 @@ const html = computed(() => md.render(props.text))
 </template>
 
 <style scoped>
+.card, .card-header {
+  background-color: var(--md-sys-color-surface);
+}
+
 .card-body :deep(h1) {
   font-size: 1.6rem;
   margin-bottom: .75rem;
