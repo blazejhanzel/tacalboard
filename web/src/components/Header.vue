@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 
-const props = defineProps<{
-  isScrolled: boolean
-}>()
-
 const bsTheme = ref("light")
 const mdTheme = ref("light")
 
@@ -19,12 +15,12 @@ function toggleTheme() {
   mdTheme.value = mdTheme.value === "light" ? "dark" : "light"
 
   document.documentElement.setAttribute('data-bs-theme', bsTheme.value)
-  document.documentElement.setAttribute('data-md-theme', mdTheme.value)
+  document.documentElement.setAttribute('data-custom-theme', mdTheme.value)
 }
 </script>
 
 <template>
-  <header class="navbar navbar-expand-lg p-2" :class="{ 'is-scrolled': isScrolled }" id="header">
+  <header class="navbar navbar-expand-lg p-2 shadow" id="header">
     <div class="container-fluid gap-2">
       <a class="navbar-brand me-auto">Tacalboard</a>
       <button class="btn rounded-5 tcb-icon-button" @click="toggleTheme">
@@ -37,9 +33,10 @@ function toggleTheme() {
   </header>
 </template>
 
-<style scope>
+<style scoped>
 header {
-  background-color: var(--md-sys-color-surface);
+  background-color: var(--adw-window-bg-color);
+  z-index: 1030;
 }
 
 header.is-scrolled {

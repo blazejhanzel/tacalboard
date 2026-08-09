@@ -1,0 +1,11 @@
+[data-custom-theme="light"] {
+  --adw-headerbar-fg-color: rgb(0 0 6 / 80%);
+  --adw-headerbar-border-color: var(--headerbar-fg-color);
+  --adw-window-bg-color: #fafafb;
+}
+
+[data-custom-theme="dark"] {
+  --adw-headerbar-fg-color: #ffffff;
+  --adw-headerbar-border-color: var(--headerbar-fg-color);
+  --adw-window-bg-color: #222226;
+}

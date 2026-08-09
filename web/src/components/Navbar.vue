@@ -1,66 +1,49 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-import { RouterLink } from 'vue-router'
+import { ref, nextTick, onMounted } from "vue";
+import NavbarButton from '@/components/NavbarButton.vue'
 
-onMounted(() => {
-  const navbar = document.getElementById("bottom-navbar")!;
 
+onMounted(async () => {
+  const navbar = document.getElementById("navbar")!;
+  
   document.documentElement.style.setProperty(
     "--bottom-navbar-height",
     `${navbar.offsetHeight}px`
   );
 })
+
+const navWidth = ref(0)
+const navbar = ref<HTMLElement | null>(null)
+
+onMounted(async () => {
+  await nextTick()
+
+  const widths = [...navbar.value!.querySelectorAll('.nav-link')]
+    .map(el => el.getBoundingClientRect().width)
+
+  navWidth.value = Math.max(...widths)
+})
 </script>
 
 <template>
-  <div class="p-2" id="bottom-navbar">
-    <nav class="container nav nav-pills nav-fill p-1 small" id="navbar" role="tablist" style="--bs-nav-link-color: var(--bs-emphasis); --bs-nav-pills-link-active-color: var(--bs-emphasis); --bs-nav-pills-link-active-bg: var(--bs-primary-bg-subtle);">
-      <RouterLink to="/" class="nav-link rounded-5" id="stickies-tab" active-class="tcb-active">
-        <i class="bi bi-stickies d-block mx-auto"></i>
-        <span>Dump</span>
-      </RouterLink>
-      <!-- <button class="nav-link rounded-5 disabled" id="calendar-tab" data-bs-toggle="tab" aria-current="page" href="#">
-        <i class="bi bi-calendar2 d-block mx-auto"></i>
-        <span>Calendar</span>
-      </button>
-      <button class="nav-link rounded-5 disabled" id="tasks-tab" data-bs-toggle="tab" aria-current="page">
-        <i class="bi bi-calendar2-check d-block mx-auto"></i>
-        <span>Tasks</span>
-      </button> -->
-      <RouterLink to="/notes" class="nav-link rounded-5" id="notes-tab" active-class="tcb-active">
-        <i class="bi bi-journal d-block mx-auto"></i>
-        <span>Notes</span>
-      </RouterLink>
-    </nav>
-  </div>
+  <nav ref="navbar" class="container-fluid nav gap-2 d-flex justify-content-center" id="navbar" role="tablist">
+    <NavbarButton to="/" label="Dump" :style="navWidth ? { width: `${navWidth}px` } : undefined">
+      <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 16 16" width="16px">
+        <g fill="#222222"><path d="m 2.1875 2 c -1.207031 0 -2.1875 0.800781 -2.1875 2 v 9.976562 c 0 1.199219 0.980469 2 2.1875 2 h 11.625 c 1.207031 0 2.1875 -1.019531 2.1875 -2.21875 v -9.539062 c 0 -1.199219 -0.980469 -2.21875 -2.1875 -2.21875 h -3.8125 v 2 h 4 v 5 h -3.5 v 0.5 s -0.007812 0.648438 -0.324219 1.277344 c -0.3125 0.628906 -0.84375 1.222656 -2.175781 1.222656 s -1.863281 -0.59375 -2.179688 -1.222656 c -0.3125 -0.628906 -0.320312 -1.277344 -0.320312 -1.277344 v -0.5 h -3.5 v -5 h 4 v -2 z m -0.1875 8 h 2.625 c 0.023438 0.300781 -0.007812 0.605469 0.300781 1.222656 c 0.4375 0.871094 1.40625 1.777344 3.074219 1.777344 s 2.636719 -0.90625 3.070312 -1.777344 c 0.308594 -0.617187 0.28125 -0.921875 0.304688 -1.222656 h 2.625 v 4 h -12 z m 0 0"/><path d="m 11 5 h -1 c -0.257812 0 -0.527344 0.128906 -0.71875 0.3125 l -0.28125 0.28125 v -5.59375 h -2 v 5.59375 l -0.28125 -0.28125 c -0.191406 -0.183594 -0.460938 -0.3125 -0.71875 -0.3125 h -1 v 1 s 0.089844 0.550781 0.28125 0.75 l 2.71875 2.65625 l 2.71875 -2.65625 c 0.191406 -0.199219 0.28125 -0.441406 0.28125 -0.75 z m 0 0"/></g>
+      </svg>
+    </NavbarButton>
+    <NavbarButton to="/notepad" label="Notepad" :style="navWidth ? { width: `${navWidth}px` } : undefined">
+      <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 16 16" width="16px">
+        <g fill="#222222"><path d="m 4.5 6 c -0.277344 0 -0.5 0.222656 -0.5 0.5 s 0.222656 0.5 0.5 0.5 h 6 c 0.277344 0 0.5 -0.222656 0.5 -0.5 s -0.222656 -0.5 -0.5 -0.5 z m 0 2 c -0.277344 0 -0.5 0.222656 -0.5 0.5 s 0.222656 0.5 0.5 0.5 h 5 c 0.277344 0 0.5 -0.222656 0.5 -0.5 s -0.222656 -0.5 -0.5 -0.5 z m 0 2 c -0.277344 0 -0.5 0.222656 -0.5 0.5 s 0.222656 0.5 0.5 0.5 h 6 c 0.277344 0 0.5 -0.222656 0.5 -0.5 s -0.222656 -0.5 -0.5 -0.5 z m 0 2 c -0.277344 0 -0.5 0.222656 -0.5 0.5 s 0.222656 0.5 0.5 0.5 h 3 c 0.277344 0 0.5 -0.222656 0.5 -0.5 s -0.222656 -0.5 -0.5 -0.5 z m 0 0"/><path d="m 3 1 c -1.089844 0 -2 0.910156 -2 2 v 11 c 0 1.089844 0.910156 2 2 2 h 9 c 1.089844 0 2 -0.910156 2 -2 v -11 c 0 -1.089844 -0.910156 -2 -2 -2 v 13 h -9 z m 0 0"/><path d="m 4.492188 -0.0078125 c -0.277344 0.00390625 -0.496094 0.2304685 -0.492188 0.5078125 v 3 c 0 0.273438 0.222656 0.5 0.5 0.5 s 0.5 -0.226562 0.5 -0.5 v -3 c 0 -0.136719 -0.050781 -0.265625 -0.148438 -0.359375 c -0.09375 -0.0976562 -0.226562 -0.1484375 -0.359374 -0.1484375 z m 2 0 c -0.277344 0.00390625 -0.496094 0.2304685 -0.492188 0.5078125 v 3 c 0 0.273438 0.222656 0.5 0.5 0.5 s 0.5 -0.226562 0.5 -0.5 v -3 c 0 -0.136719 -0.050781 -0.265625 -0.148438 -0.359375 c -0.09375 -0.0976562 -0.226562 -0.1484375 -0.359374 -0.1484375 z m 2 0 c -0.277344 0.00390625 -0.496094 0.2304685 -0.492188 0.5078125 v 3 c 0 0.273438 0.222656 0.5 0.5 0.5 s 0.5 -0.226562 0.5 -0.5 v -3 c 0 -0.136719 -0.050781 -0.265625 -0.148438 -0.359375 c -0.09375 -0.0976562 -0.226562 -0.1484375 -0.359374 -0.1484375 z m 2 0 c -0.277344 0.00390625 -0.496094 0.2304685 -0.492188 0.5078125 v 3 c 0 0.273438 0.222656 0.5 0.5 0.5 s 0.5 -0.226562 0.5 -0.5 v -3 c 0 -0.136719 -0.050781 -0.265625 -0.148438 -0.359375 c -0.09375 -0.0976562 -0.226562 -0.1484375 -0.359374 -0.1484375 z m 0 0"/></g>
+      </svg>
+    </NavbarButton>
+  </nav>
 </template>
 
-<style scope>
-#bottom-navbar {
-  background-color: var(--md-sys-color-surface-container);
+<style scoped>
+.container-fluid {
+  background-color: var(--adw-window-bg-color);
+  padding: 0.5rem;
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)) !important;
 }
-
-.nav-link i {
-  color: var(--md-sys-color-on-surface-variant);
-  max-width: 80px;
-  font-size: 24px;
-}
-
-.nav-link span {
-  color: var(--md-sys-color-on-surface-variant);
-}
-
-.tcb-active i {
-  background-color: var(--md-sys-color-secondary-container);
-  border-radius: 999px;
-}
-
-.tcb-active i {
-  color: var(--md-sys-color-on-secondary-container);
-}
-
-.tcb-active span {
-  color: var(--md-sys-color-secondary);
-}
-
 </style>
