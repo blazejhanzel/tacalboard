@@ -2,14 +2,56 @@
 import MarkdownIt from "markdown-it"
 import taskLists from "markdown-it-task-lists"
 import { computed } from "vue"
+import { useSettingsStore } from '@/stores/settings'
 
+const settings = useSettingsStore()
+
+const props = defineProps<{
+  date: Date,
+  text: string
+}>()
+
+const dateFormats: Record<string, Intl.DateTimeFormatOptions> = {
+  recent: {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  },
+
+  currentYear: {
+    day: 'numeric',
+    month: 'long'
+  },
+
+  older: {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }
+}
+
+const dateFormatted = (() => {
+  const now = new Date()
+
+  const diff = now.getTime() - props.date.getTime()
+  const sevenDays = 7 * 24 * 60 * 60 * 1000
+
+  let format
+
+  if (diff >= 0 && diff < sevenDays) {
+    format = dateFormats.recent
+  } else if (props.date.getFullYear() === now.getFullYear()) {
+    format = dateFormats.currentYear
+  } else {
+    format = dateFormats.older
+  }
+
+  return new Intl.DateTimeFormat(settings.locale, format).format(props.date)
+})()
+  
 const md = new MarkdownIt({
     breaks: true
   }).use(taskLists)
-
-const props = defineProps<{
-  text: string
-}>()
 
 const html = computed(() => md.render(props.text))
 </script>
@@ -18,7 +60,7 @@ const html = computed(() => md.render(props.text))
   <div class="card shadow-sm">
     <div class="card-header p-1 ps-3 d-flex border-0">
       <div class="w-100 align-self-center text-body-secondary">
-        Featured
+        {{ dateFormatted }}
       </div>
       <div class="flex-shrink-1">
         <div class="dropdown-center">
@@ -28,9 +70,8 @@ const html = computed(() => md.render(props.text))
             </svg>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><button class="dropdown-item" type="button">Action</button></li>
-            <li><button class="dropdown-item" type="button">Another action</button></li>
-            <li><button class="dropdown-item" type="button">Something else here</button></li>
+            <li><button class="dropdown-item" type="button">Edit</button></li>
+            <li><button class="dropdown-item" type="button">Remove</button></li>
           </ul>
         </div>
       </div>

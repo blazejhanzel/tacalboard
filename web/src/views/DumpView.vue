@@ -3,11 +3,13 @@ import { ref, nextTick, onMounted } from 'vue'
 import NoteCard from "@/components/NoteCard.vue"
 
 const notes = ref([
-  {
+  { // Notatka kupienia mleka - stara notatka
     id: 1,
-    text: "Kupić mleko."
+    text: "Kupić mleko.",
+    createdAt: new Date("2023-10-01T08:00:00Z"),
+    modifiedAt: new Date("2023-10-01T08:00:00Z") 
   },
-  {
+  { // Notatka z listy zadań na weekend - notatka stworzona dawno temu
     id: 2,
     text: `## Weekend
 
@@ -15,9 +17,11 @@ const notes = ref([
 - Zrobić pranie
 - Odebrać paczkę z paczkomatu
 
-Na koniec wieczorem obejrzeć film.`
+Na koniec wieczorem obejrzeć film.`,
+    createdAt: new Date("2023-11-15T14:30:00Z"),
+    modifiedAt: new Date("2023-11-15T14:30:00Z") 
   },
-  {
+  { // Pomysł na aplikację - notatka stworzona ostatnio, zmieniona dziś rano
     id: 3,
     text: `# Pomysł
 
@@ -28,15 +32,19 @@ Najważniejsze cechy:
 - szybkie dodawanie,
 - pełne wsparcie dla Markdown,
 - synchronizacja pomiędzy urządzeniami,
-- działanie offline jako PWA.`
+- działanie offline jako PWA.`,
+    createdAt: new Date("2024-05-28T09:00:00Z"),
+    modifiedAt: new Date("2024-05-29T10:30:00Z") // Zaktualizowane dziś!
   },
-  {
+  { // Cytat - notatka stworzona w innym dniu
     id: 4,
     text: `> "The best productivity system is the one you actually use."
 
-Może warto wyświetlać losowy cytat na ekranie głównym?`
+Może warto wyświetlać losowy cytat na ekranie głównym?`,
+    createdAt: new Date("2023-12-25T18:00:00Z"),
+    modifiedAt: new Date("2023-12-25T18:00:00Z") 
   },
-  {
+  { // Brain dump - notatka aktywnie zarządzana
     id: 5,
     text: `### Brain dump
 
@@ -47,10 +55,14 @@ Dzisiaj wpadło mi kilka pomysłów:
 - [x] Stworzyć komponent karty
 - [ ] Zapisać dane w IndexedDB
 
-Na razie wszystko trzymane jest tylko w pamięci aplikacji.`
+Na razie wszystko trzymane jest tylko w pamięci aplikacji.`,
+    createdAt: new Date("2024-05-27T16:00:00Z"),
+    modifiedAt: new Date("2024-05-28T15:30:00Z") // Ostatnia edycja była rano.
   },
   {
     id: 6,
+    createdAt: new Date("2024-05-27T15:00:00Z"),
+    modifiedAt: new Date("2024-05-28T15:20:00Z"),
     text: `Przykład kodu:
 
 \`\`\`ts
@@ -72,7 +84,9 @@ Po kliknięciu **Save** notatka powinna pojawić się na początku listy.`
 | 11:30 | Projekt organizera |
 | 15:00 | Przegląd zadań |
 
-Po spotkaniu przygotować krótkie podsumowanie.`
+Po spotkaniu przygotować krótkie podsumowanie.`,
+    createdAt: new Date(), // Bieżąca data utworzenia
+    modifiedAt: new Date()
   }
 ])
 
@@ -114,6 +128,8 @@ async function addNote() {
 
   notes.value.unshift({
     id: Date.now(),
+    createdAt: new Date(),
+    modifiedAt: new Date(),
     text
   })
 
@@ -156,8 +172,9 @@ onMounted(() => {
   </div>
   <div class="d-grid gap-3 mt-3">
     <NoteCard
-      v-for="note in notes"
+      v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
       :key="note.id"
+      :date="note.modifiedAt"
       :text="note.text"
     />
   </div>
