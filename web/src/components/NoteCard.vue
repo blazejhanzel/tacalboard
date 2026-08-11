@@ -11,18 +11,25 @@ const props = defineProps<{
   text: string
 }>()
 
-const dateFormats: Record<string, Intl.DateTimeFormatOptions> = {
+const dateFormats: Record<
+  'today' | 'recent' | 'currentYear' | 'older',
+  Intl.DateTimeFormatOptions
+> = {
+   today: {
+    hour: '2-digit',
+    minute: '2-digit'
+  },
   recent: {
     weekday: 'long',
     day: 'numeric',
-    month: 'long'
+    month: 'long',
+    hour: '2-digit',
+    minute: '2-digit'
   },
-
   currentYear: {
     day: 'numeric',
     month: 'long'
   },
-
   older: {
     day: 'numeric',
     month: 'long',
@@ -33,10 +40,24 @@ const dateFormats: Record<string, Intl.DateTimeFormatOptions> = {
 const dateFormatted = (() => {
   const now = new Date()
 
+  const isToday =
+    props.date.getFullYear() === now.getFullYear() &&
+    props.date.getMonth() === now.getMonth() &&
+    props.date.getDate() === now.getDate()
+
+  if (isToday) {
+    const time = new Intl.DateTimeFormat(
+      settings.locale,
+      dateFormats.today
+    ).format(props.date)
+
+    return `Dzisiaj, ${time}`
+  }
+
   const diff = now.getTime() - props.date.getTime()
   const sevenDays = 7 * 24 * 60 * 60 * 1000
 
-  let format
+  let format: Intl.DateTimeFormatOptions
 
   if (diff >= 0 && diff < sevenDays) {
     format = dateFormats.recent
@@ -46,7 +67,10 @@ const dateFormatted = (() => {
     format = dateFormats.older
   }
 
-  return new Intl.DateTimeFormat(settings.locale, format).format(props.date)
+  return new Intl.DateTimeFormat(
+    settings.locale,
+    format
+  ).format(props.date)
 })()
   
 const md = new MarkdownIt({
