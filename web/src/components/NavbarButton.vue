@@ -16,7 +16,7 @@ defineProps({
 <template>
   <RouterLink
     :to="to"
-    class="nav-link gap-2 d-flex align-items-center justify-content-center"
+    class="nav-link d-flex align-items-center justify-content-center"
     active-class="tcb-active"
   >
     <slot />
@@ -26,7 +26,10 @@ defineProps({
 
 <style scoped>
 .nav-link {
+  font-size: 0.85rem !important;
   border-radius: var(--adw-border-radius-sm);
+  padding: 6px 16px;
+  gap: 8px;
 }
 
 .nav-link:hover {
