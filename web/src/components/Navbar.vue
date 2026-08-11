@@ -7,7 +7,7 @@ onMounted(async () => {
   const navbar = document.getElementById("navbar")!;
   
   document.documentElement.style.setProperty(
-    "--bottom-navbar-height",
+    "--tcb-bottom-navbar-height",
     `${navbar.offsetHeight}px`
   );
 })
@@ -45,5 +45,9 @@ onMounted(async () => {
   background-color: var(--adw-window-bg-color);
   padding: 0.5rem;
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)) !important;
+  z-index: 1050;
+  box-shadow:
+    0 -1px 2px rgb(0 0 0 / 12%),
+    0 -2px 4px rgb(0 0 0 / 6%);
 }
 </style>

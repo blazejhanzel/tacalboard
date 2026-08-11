@@ -146,7 +146,11 @@ onMounted(() => {
         placeholder="Capture a thought... ">
       </textarea>
       <div class="flex-shrink-1 align-self-center p-3">
-        <button class="btn tcb-icon-button" @mousedown="isClickingSendButton = true" @click="addNote"><i class="bi bi-send-fill"></i></button>
+        <button class="btn adw-btn-circular adw-suggested-action" @mousedown="isClickingSendButton = true" @click="addNote">
+          <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 16 16" width="16px">
+            <path d="m 15 7.992188 l -14 -7 v 6 l 8 1 l -8 1 v 6 z m 0 0" fill="#222222"/>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
@@ -165,17 +169,18 @@ onMounted(() => {
   top: 16px;
   z-index: 1030;
   box-shadow:
-    0 1px 2px rgb(0 0 0 / 10%),
-    0 1px 3px rgb(0 0 0 / 8%);
-}
-
-#dump-composer.editing {
-  position: fixed;
-  bottom: calc(var(--bottom-navbar-height) + env(safe-area-inset-bottom));
-  left: 0;
-  right: 0;
-  top: auto;
-  z-index: 1030;
+    0 0.25rem 0.5rem var(--adw-card-shade-color);
+  
+  &.editing {
+    position: fixed;
+    bottom:
+      calc(var(--tcb-bottom-navbar-height) 
+      + env(safe-area-inset-bottom)
+      + 4px);
+    left: 0;
+    right: 0;
+    top: auto;
+  }
 }
 
 @media (min-width: 768px) {
@@ -189,14 +194,7 @@ onMounted(() => {
   resize: none;
   overflow-y: auto;
   max-height: 40vh; /* lub np. 250px */
-}
-
-#dump-composer, #dump-textarea {
-  background-color: var(--md-sys-color-surface-container-low);
-}
-
-.tcb-icon-button i {
-  color: var(--md-sys-color-primary);
-  font-size: 24px;
+  background-color: transparent;
+  border-radius: var(--adw-border-radius);
 }
 </style>

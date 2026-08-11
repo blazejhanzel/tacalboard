@@ -1,7 +1,4 @@
 @import "bootstrap/scss/bootstrap";
-
-@import "material-theme/light.css";
-@import "material-theme/dark.css";
 @import "adwaita.css";
 
 /* Basic classes */
@@ -23,15 +20,17 @@ body {
   --bs-body-bg: var(---adw-window-bg-color);
 }
 
-/* Custom classes */
-
-:root {
-  --tcb-overlay-hover: color-mix(in srgb, transparent, black 8%);
-  --tcb-overlay-active: color-mix(in srgb, transparent, black 16%);
-}
-
 .btn {
   border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--adw-border-radius-sm);
+  padding: 8px;
+
+  // &:focus {
+  //   background-color: transparent;
+  // }
 }
 
 .btn:hover, .dropdown-item:hover {
@@ -40,4 +39,84 @@ body {
 
 .btn:active, .btn:first-child:active, .btn:focus-visible, .dropdown-item:active, .dropdown-item:focus, .dropdown-item:focus-visible {
   background-color: var(--tcb-overlay-active) !important;
+}
+
+.btn svg * {
+  fill: var(--adw-headerbar-fg-color);
+}
+
+.card {
+  background-color: var(--adw-card-bg-color);
+  color: var(--adw-card-fg-color);
+  border-radius: var(--adw-border-radius) !important;
+  box-shadow:
+    0 0.125rem 0.25rem var(--adw-card-shade-color);
+}
+
+.card-header {
+  background-color: transparent;
+  color: var(--adw-card-fg-color);
+  border-radius: var(--adw-border-radius) !important;
+}
+
+.dropdown-menu {
+  background-color: var(--adw-popover-bg-color);
+  color: var(--adw-popover-fg-color);
+  border-radius: var(--adw-border-radius) !important;
+  padding: 4px;
+  box-shadow:
+    0 0.5rem 1rem var(--adw-popover-shade-color),
+    0 -0.25rem 0.5rem var(--adw-popover-shade-color);
+  }
+  
+  .dropdown-item {
+    background-color: var(--adw-popover-bg-color);
+    color: var(--adw-popover-fg-color);
+
+    &:hover {
+      border-radius: var(--adw-border-radius) !important;
+    }
+}
+
+/* Custom classes */
+
+[data-custom-theme="light"] {
+  --tcb-overlay-color: black;
+}
+
+[data-custom-theme="dark"] {
+  --tcb-overlay-color: white;
+}
+
+:root {
+  --tcb-overlay-raised: color-mix(in srgb, transparent, var(--tcb-overlay-color) 4%);
+  --tcb-overlay-hover: color-mix(in srgb, transparent, var(--tcb-overlay-color) 8%);
+  --tcb-overlay-active: color-mix(in srgb, transparent, var(--tcb-overlay-color) 16%);
+}
+
+.adw-btn-circular {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px !important;
+  padding: 8px;
+}
+
+.adw-btn-raised {
+  background-color: var(--tcb-overlay-raised);
+}
+
+.adw-suggested-action {
+  --tcb-overlay-raised: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 4%);
+  --tcb-overlay-hover: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 8%);
+  --tcb-overlay-active: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 16%);
+  background-color: var(--adw-accent-purple);
+  
+  &:focus {
+    background-color: var(--adw-accent-purple);
+  }
+
+  svg * {
+    fill: #fff;
+  }
 }

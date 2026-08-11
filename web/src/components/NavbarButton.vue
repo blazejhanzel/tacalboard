@@ -16,7 +16,7 @@ defineProps({
 <template>
   <RouterLink
     :to="to"
-    class="nav-link gap-2 d-flex rounded-4 align-items-center justify-content-center"
+    class="nav-link gap-2 d-flex align-items-center justify-content-center"
     active-class="tcb-active"
   >
     <slot />
@@ -25,6 +25,10 @@ defineProps({
 </template>
 
 <style scoped>
+.nav-link {
+  border-radius: var(--adw-border-radius-sm);
+}
+
 .nav-link:hover {
   background-color: var(--tcb-overlay-hover);
 }
@@ -33,8 +37,9 @@ defineProps({
   color: var(--adw-headerbar-fg-color);
 }
 
-.nav-link :deep(svg) {
+.nav-link :deep(svg *) {
   color: var(--adw-headerbar-fg-color);
+  fill: var(--adw-headerbar-fg-color);
   width: 20px;
   height: 20px;
 }
