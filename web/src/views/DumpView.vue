@@ -162,7 +162,7 @@ onMounted(() => {
         placeholder="Capture a thought... ">
       </textarea>
       <div class="flex-shrink-1 align-self-center p-3">
-        <button class="btn adw-btn-circular adw-suggested-action" @mousedown="isClickingSendButton = true" @click="addNote">
+        <button class="btn adw-btn-circular adw-btn-suggested-action" @mousedown="isClickingSendButton = true" @click="addNote">
           <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 16 16" width="16px">
             <path d="m 15 7.992188 l -14 -7 v 6 l 8 1 l -8 1 v 6 z m 0 0" fill="#222222"/>
           </svg>
@@ -191,9 +191,7 @@ onMounted(() => {
   &.editing {
     position: fixed;
     bottom:
-      calc(var(--tcb-bottom-navbar-height) 
-      + env(safe-area-inset-bottom)
-      + 4px);
+      calc(var(--tcb-bottom-navbar-height) + 4px);
     left: 0;
     right: 0;
     top: auto;

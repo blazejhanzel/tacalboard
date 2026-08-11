@@ -71,7 +71,7 @@ const html = computed(() => md.render(props.text))
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><button class="dropdown-item" type="button">Edit</button></li>
-            <li><button class="dropdown-item" type="button">Remove</button></li>
+            <li><button class="dropdown-item adw-destructive-action" type="button">Remove</button></li>
           </ul>
         </div>
       </div>

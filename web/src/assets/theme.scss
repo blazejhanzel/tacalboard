@@ -73,7 +73,7 @@ body {
     background-color: var(--adw-popover-bg-color);
     color: var(--adw-popover-fg-color);
 
-    &:hover {
+    &:is(:hover, :focus, :focus-visible, :active) {
       border-radius: var(--adw-border-radius) !important;
     }
 }
@@ -106,7 +106,7 @@ body {
   background-color: var(--tcb-overlay-raised);
 }
 
-.adw-suggested-action {
+.adw-btn-suggested-action {
   --tcb-overlay-raised: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 4%);
   --tcb-overlay-hover: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 8%);
   --tcb-overlay-active: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 16%);
@@ -118,5 +118,13 @@ body {
 
   svg * {
     fill: #fff;
+  }
+}
+
+.adw-destructive-action {
+  color: var(--adw-destructive-color);
+
+  &:is(:hover, :focus, :focus-visible, :active) {
+    color: var(--adw-destructive-color) !important;
   }
 }

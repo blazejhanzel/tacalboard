@@ -30,6 +30,9 @@
   --adw-popover-bg-color: #ffffff;
   --adw-popover-fg-color: rgb(0 0 6 / 80%);
   --adw-popover-shade-color: rgb(0 0 6 / 7%);
+  --adw-destructive-bg-color: #e01b24;
+  --adw-destructive-fg-color: #ffffff;
+  --adw-destructive-color: #c30000;
 }
 
 [data-custom-theme="dark"] {
@@ -50,4 +53,7 @@
   --adw-popover-bg-color: #36363a;
   --adw-popover-fg-color: #ffffff;
   --adw-popover-shade-color: rgb(0 0 6 / 25%);
+  --adw-destructive-bg-color: #c01c28;
+  --adw-destructive-fg-color: #ffffff;
+  --adw-destructive-color: #ff938c;
 }
