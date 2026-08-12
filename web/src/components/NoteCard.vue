@@ -3,10 +3,12 @@ import MarkdownIt from "markdown-it"
 import taskLists from "markdown-it-task-lists"
 import { computed } from "vue"
 import { useSettingsStore } from '@/stores/settings'
+import { db } from '@/db/database'
 
 const settings = useSettingsStore()
 
 const props = defineProps<{
+  id: string,
   date: Date,
   text: string
 }>()
@@ -78,6 +80,10 @@ const md = new MarkdownIt({
   }).use(taskLists)
 
 const html = computed(() => md.render(props.text))
+
+async function removeNote() {
+  await db.notes.delete(props.id)
+}
 </script>
 
 <template>
@@ -95,7 +101,7 @@ const html = computed(() => md.render(props.text))
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><button class="dropdown-item" type="button">Edit</button></li>
-            <li><button class="dropdown-item adw-destructive-action" type="button">Remove</button></li>
+            <li><button class="dropdown-item adw-destructive-action" type="button" @click="removeNote">Remove</button></li>
           </ul>
         </div>
       </div>

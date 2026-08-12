@@ -74,6 +74,7 @@ body {
     color: var(--adw-popover-fg-color);
 
     &:is(:hover, :focus, :focus-visible, :active) {
+      color: var(--adw-popover-fg-color);
       border-radius: var(--adw-border-radius) !important;
     }
 }

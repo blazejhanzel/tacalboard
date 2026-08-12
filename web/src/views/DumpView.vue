@@ -1,97 +1,34 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue'
+import { liveQuery } from 'dexie'
+import { db, type Note } from '@/db/database'
 import NoteCard from "@/components/NoteCard.vue"
 
-const notes = ref([
-  { // Notatka kupienia mleka - stara notatka
-    id: 1,
-    text: "Kupić mleko.",
-    createdAt: new Date("2023-10-01T08:00:00Z"),
-    modifiedAt: new Date("2023-10-01T08:00:00Z") 
+/* Notes database management */
+
+const notes = ref<Note[]>([])
+
+const notesSubscription = liveQuery(() =>
+  db.notes
+    .orderBy('modifiedAt')
+    .reverse()
+    .toArray()
+).subscribe({
+  next: value => {
+    notes.value = value
   },
-  { // Notatka z listy zadań na weekend - notatka stworzona dawno temu
-    id: 2,
-    text: `## Weekend
-
-- Posprzątać mieszkanie
-- Zrobić pranie
-- Odebrać paczkę z paczkomatu
-
-Na koniec wieczorem obejrzeć film.`,
-    createdAt: new Date("2023-11-15T14:30:00Z"),
-    modifiedAt: new Date("2023-11-15T14:30:00Z") 
-  },
-  { // Pomysł na aplikację - notatka stworzona ostatnio, zmieniona dziś rano
-    id: 3,
-    text: `# Pomysł
-
-Chciałbym, żeby aplikacja działała trochę jak **Google Keep**, ale z możliwością późniejszego przekształcenia każdej notatki w zadanie lub wydarzenie w kalendarzu.
-
-Najważniejsze cechy:
-
-- szybkie dodawanie,
-- pełne wsparcie dla Markdown,
-- synchronizacja pomiędzy urządzeniami,
-- działanie offline jako PWA.`,
-    createdAt: new Date("2024-05-28T09:00:00Z"),
-    modifiedAt: new Date("2024-05-29T10:30:00Z") // Zaktualizowane dziś!
-  },
-  { // Cytat - notatka stworzona w innym dniu
-    id: 4,
-    text: `> "The best productivity system is the one you actually use."
-
-Może warto wyświetlać losowy cytat na ekranie głównym?`,
-    createdAt: new Date("2023-12-25T18:00:00Z"),
-    modifiedAt: new Date("2023-12-25T18:00:00Z") 
-  },
-  { // Brain dump - notatka aktywnie zarządzana
-    id: 5,
-    text: `### Brain dump
-
-Dzisiaj wpadło mi kilka pomysłów:
-
-- [ ] Dodać wyszukiwarkę notatek
-- [ ] Zaimplementować tagi
-- [x] Stworzyć komponent karty
-- [ ] Zapisać dane w IndexedDB
-
-Na razie wszystko trzymane jest tylko w pamięci aplikacji.`,
-    createdAt: new Date("2024-05-27T16:00:00Z"),
-    modifiedAt: new Date("2024-05-28T15:30:00Z") // Ostatnia edycja była rano.
-  },
-  {
-    id: 6,
-    createdAt: new Date("2024-05-27T15:00:00Z"),
-    modifiedAt: new Date("2024-05-28T15:20:00Z"),
-    text: `Przykład kodu:
-
-\`\`\`ts
-const note = {
-  id: Date.now(),
-  text: "Hello!"
-}
-\`\`\`
-
-Po kliknięciu **Save** notatka powinna pojawić się na początku listy.`
-  },
-  {
-    id: 7,
-    text: `### Spotkanie
-
-| Godzina | Temat |
-|---------:|-------|
-| 09:00 | Daily |
-| 11:30 | Projekt organizera |
-| 15:00 | Przegląd zadań |
-
-Po spotkaniu przygotować krótkie podsumowanie.`,
-    createdAt: new Date(), // Bieżąca data utworzenia
-    modifiedAt: new Date()
+  error: error => {
+    console.error('Błąd podczas pobierania notatek:', error)
   }
-])
+})
+
+onUnmounted(() => {
+  notesSubscription.unsubscribe()
+})
+
+/* Vue management */
 
 const dumpTextarea = ref<HTMLTextAreaElement | null>(null)
-
 const newNote = ref('')
 const isWritingDumpNote = ref(false)
 const isClickingSendButton = ref(false)
@@ -126,17 +63,25 @@ async function addNote() {
 
   if (!text) return
 
-  notes.value.unshift({
-    id: Date.now(),
-    createdAt: new Date(),
-    modifiedAt: new Date(),
-    text
+  const now = new Date()
+
+  await db.notes.add({
+    id: (() => {
+      try {
+        return crypto.randomUUID()
+      } catch {
+        return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+      }
+    })(),
+    text,
+    createdAt: now,
+    modifiedAt: now
   })
 
   newNote.value = ''
   isWritingDumpNote.value = false
   isClickingSendButton.value = false
-  
+
   await nextTick()
   autoResize()
 }
@@ -174,6 +119,7 @@ onMounted(() => {
     <NoteCard
       v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
       :key="note.id"
+      :id="note.id"
       :date="note.modifiedAt"
       :text="note.text"
     />
