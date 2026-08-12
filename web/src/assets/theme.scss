@@ -1,6 +1,22 @@
 @import "bootstrap/scss/bootstrap";
 @import "adwaita.css";
 
+@font-face {
+  font-family: "Adwaita Sans";
+  src: url("./fonts/AdwaitaSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Adwaita Sans";
+  src: url("./fonts/AdwaitaSans-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* Basic classes */
 
 html,
@@ -12,6 +28,8 @@ body {
 
 body {
   background-color: var(--adw-window-bg-color);
+  font-family: "Adwaita Sans", sans-serif;
+  --bs-body-font-family: "Adwaita Sans", sans-serif;
 }
 
 /* Bootstrap overrides */
@@ -105,6 +123,22 @@ body {
 
 .adw-btn-raised {
   background-color: var(--tcb-overlay-raised);
+}
+
+.adw-btn-destructive-action {
+  --tcb-overlay-raised: color-mix(in srgb, var(--adw-destructive-bg-color), var(--tcb-overlay-color) 4%);
+  --tcb-overlay-hover: color-mix(in srgb, var(--adw-destructive-bg-color), var(--tcb-overlay-color) 8%);
+  --tcb-overlay-active: color-mix(in srgb, var(--adw-destructive-bg-color), var(--tcb-overlay-color) 16%);
+  background-color: var(--adw-destructive-bg-color);
+  color: var(--adw-destructive-fg-color);
+  
+  &:is(:hover, :focus, :focus-visible, :active) {
+    color: var(--adw-destructive-fg-color);
+  }
+
+  svg * {
+    fill: #fff;
+  }
 }
 
 .adw-btn-suggested-action {

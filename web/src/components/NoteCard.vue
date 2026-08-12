@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { ref, computed } from "vue"
 import MarkdownIt from "markdown-it"
 import taskLists from "markdown-it-task-lists"
-import { computed } from "vue"
 import { useSettingsStore } from '@/stores/settings'
 import { db } from '@/db/database'
+import AlertDialog from '@/components/AlertDialog.vue'
+
+// TODO: Arrange order of functions and variables
 
 const settings = useSettingsStore()
 
@@ -12,6 +15,8 @@ const props = defineProps<{
   date: Date,
   text: string
 }>()
+
+const showRemoveDialog = ref(false)
 
 const dateFormats: Record<
   'today' | 'recent' | 'currentYear' | 'older',
@@ -81,8 +86,13 @@ const md = new MarkdownIt({
 
 const html = computed(() => md.render(props.text))
 
+function askRemove() {
+  showRemoveDialog.value = true
+}
+
 async function removeNote() {
   await db.notes.delete(props.id)
+  showRemoveDialog.value = false
 }
 </script>
 
@@ -101,13 +111,20 @@ async function removeNote() {
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><button class="dropdown-item" type="button">Edit</button></li>
-            <li><button class="dropdown-item adw-destructive-action" type="button" @click="removeNote">Remove</button></li>
+            <li><button class="dropdown-item adw-destructive-action" type="button" @click="askRemove">Remove</button></li>
           </ul>
         </div>
       </div>
     </div>
     <div class="card-body pt-0" v-html="html"></div>
   </div>
+  <AlertDialog
+    :visible="showRemoveDialog"
+    title="Usunąć notatkę?"
+    message="Czy na pewno chcesz usunąć tę notatkę? Tej operacji nie można cofnąć."
+    @confirm="removeNote"
+    @cancel="showRemoveDialog = false"
+  />
 </template>
 
 <style scoped>

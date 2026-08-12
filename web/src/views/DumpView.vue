@@ -6,6 +6,8 @@ import NoteCard from "@/components/NoteCard.vue"
 
 /* Notes database management */
 
+// TODO: Arrange order of functions and variables
+
 const notes = ref<Note[]>([])
 
 const notesSubscription = liveQuery(() =>

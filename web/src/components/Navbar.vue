@@ -2,7 +2,6 @@
 import { ref, nextTick, onMounted } from "vue";
 import NavbarButton from '@/components/NavbarButton.vue'
 
-
 onMounted(async () => {
   const navbar = document.getElementById("navbar")!;
   
