@@ -4,8 +4,8 @@
 @font-face {
   font-family: "Adwaita Sans";
   src: url("./fonts/AdwaitaSans-Regular.ttf") format("truetype");
-  font-weight: 400;
   font-style: normal;
+  font-weight: 100 1000;
   font-display: swap;
 }
 
@@ -45,10 +45,6 @@ body {
   justify-content: center;
   border-radius: var(--adw-border-radius-sm);
   padding: 8px;
-
-  // &:focus {
-  //   background-color: transparent;
-  // }
 }
 
 .btn:hover, .dropdown-item:hover {
@@ -111,6 +107,13 @@ body {
   --tcb-overlay-raised: color-mix(in srgb, transparent, var(--tcb-overlay-color) 4%);
   --tcb-overlay-hover: color-mix(in srgb, transparent, var(--tcb-overlay-color) 8%);
   --tcb-overlay-active: color-mix(in srgb, transparent, var(--tcb-overlay-color) 16%);
+}
+
+.adw-btn-dialog {
+  border-radius: var(--adw-border-radius);
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-weight: bolder !important;
 }
 
 .adw-btn-circular {

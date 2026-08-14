@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
+import { useI18n } from 'vue-i18n'
 import MarkdownIt from "markdown-it"
 import taskLists from "markdown-it-task-lists"
 import { useSettingsStore } from '@/stores/settings'
 import { db } from '@/db/database'
 import AlertDialog from '@/components/AlertDialog.vue'
 
-// TODO: Arrange order of functions and variables
-
+const { t } = useI18n()
 const settings = useSettingsStore()
 
 const props = defineProps<{
@@ -58,7 +58,7 @@ const dateFormatted = (() => {
       dateFormats.today
     ).format(props.date)
 
-    return `Dzisiaj, ${time}`
+    return `${t('dates.today')}, ${time}`
   }
 
   const diff = now.getTime() - props.date.getTime()
@@ -110,8 +110,8 @@ async function removeNote() {
             </svg>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><button class="dropdown-item" type="button">Edit</button></li>
-            <li><button class="dropdown-item adw-destructive-action" type="button" @click="askRemove">Remove</button></li>
+            <li><button class="dropdown-item" type="button">{{ t('common.edit') }}</button></li>
+            <li><button class="dropdown-item adw-destructive-action" type="button" @click="askRemove">{{ t('common.delete') }}</button></li>
           </ul>
         </div>
       </div>
@@ -120,8 +120,8 @@ async function removeNote() {
   </div>
   <AlertDialog
     :visible="showRemoveDialog"
-    title="Usunąć notatkę?"
-    message="Czy na pewno chcesz usunąć tę notatkę? Tej operacji nie można cofnąć."
+    :title="t('notes.deleteTitle')"
+    :message="t('notes.deleteMessage')"
     @confirm="removeNote"
     @cancel="showRemoveDialog = false"
   />

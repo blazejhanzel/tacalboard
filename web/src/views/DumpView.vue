@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { liveQuery } from 'dexie'
 import { db, type Note } from '@/db/database'
 import NoteCard from "@/components/NoteCard.vue"
+import IconPaperPlane from '@/components/icons/IconPaperPlane.vue'
 
-/* Notes database management */
-
-// TODO: Arrange order of functions and variables
+const { t } = useI18n()
 
 const notes = ref<Note[]>([])
+const newNote = ref('')
+const isWritingDumpNote = ref(false)
+const isClickingSendButton = ref(false)
+
+const dumpTextarea = ref<HTMLTextAreaElement | null>(null)
 
 const notesSubscription = liveQuery(() =>
   db.notes
@@ -20,45 +25,9 @@ const notesSubscription = liveQuery(() =>
     notes.value = value
   },
   error: error => {
-    console.error('Błąd podczas pobierania notatek:', error)
+    console.error('Error when pulling notes from database:', error)
   }
 })
-
-onUnmounted(() => {
-  notesSubscription.unsubscribe()
-})
-
-/* Vue management */
-
-const dumpTextarea = ref<HTMLTextAreaElement | null>(null)
-const newNote = ref('')
-const isWritingDumpNote = ref(false)
-const isClickingSendButton = ref(false)
-
-function autoResize() {
-  const el = dumpTextarea.value
-
-  if (!el) return
-
-  const maxHeight = window.innerHeight * 0.4
-
-  // Reset wysokości, aby poprawnie obliczyć nowy scrollHeight.
-  el.style.height = 'auto'
-
-  // Dopasuj wysokość do aktualnej zawartości.
-  el.style.height = `${el.scrollHeight}px`
-  
-  el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
-}
-
-function handleBlur() {
-  if (isClickingSendButton.value) {
-    isClickingSendButton.value = false
-    return
-  }
-
-  isWritingDumpNote.value = false
-}
 
 async function addNote() {
   const text = newNote.value.trim()
@@ -88,8 +57,31 @@ async function addNote() {
   autoResize()
 }
 
+function autoResize() {
+  const el = dumpTextarea.value
+  if (!el) return
+
+  const maxHeight = window.innerHeight * 0.4
+  el.style.height = 'auto' // Reset to proper scrollHeight calculation
+  el.style.height = `${el.scrollHeight}px`
+  el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
+}
+
+function handleBlur() {
+  if (isClickingSendButton.value) {
+    isClickingSendButton.value = false
+    return
+  }
+
+  isWritingDumpNote.value = false
+}
+
 onMounted(() => {
   autoResize();
+})
+
+onUnmounted(() => {
+  notesSubscription.unsubscribe()
 })
 </script>
 
@@ -106,13 +98,11 @@ onMounted(() => {
         @keydown.ctrl.enter.prevent="addNote"
         @focus="isWritingDumpNote = true"
         @blur="handleBlur"
-        placeholder="Capture a thought... ">
+        :placeholder="t('notes.composerPlaceholder')">
       </textarea>
       <div class="flex-shrink-1 align-self-center p-3">
         <button class="btn adw-btn-circular adw-btn-suggested-action" @mousedown="isClickingSendButton = true" @click="addNote">
-          <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 16 16" width="16px">
-            <path d="m 15 7.992188 l -14 -7 v 6 l 8 1 l -8 1 v 6 z m 0 0" fill="#222222"/>
-          </svg>
+          <IconPaperPlane />
         </button>
       </div>
     </div>
@@ -138,25 +128,25 @@ onMounted(() => {
   
   &.editing {
     position: fixed;
-    bottom:
-      calc(var(--tcb-bottom-navbar-height) + 4px);
+    inset: auto 0 calc(var(--tcb-bottom-navbar-height) + 4px);
     left: 0;
     right: 0;
     top: auto;
   }
-}
 
-@media (min-width: 768px) {
-  #dump-composer.editing {
-    position: sticky;
-    top: 16px;
+  @media (min-width: 768px) {
+    &.editing {
+      position: sticky;
+      top: 16px;
+      inset: auto;
+    }
   }
 }
 
 #dump-textarea {
   resize: none;
   overflow-y: auto;
-  max-height: 40vh; /* lub np. 250px */
+  max-height: 40vh;
   background-color: transparent;
   border-radius: var(--adw-border-radius);
 }

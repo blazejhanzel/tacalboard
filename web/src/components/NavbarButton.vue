@@ -43,8 +43,6 @@ defineProps({
 .nav-link :deep(svg *) {
   color: var(--adw-headerbar-fg-color);
   fill: var(--adw-headerbar-fg-color);
-  width: 20px;
-  height: 20px;
 }
 
 .nav-link span {
