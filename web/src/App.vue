@@ -4,8 +4,8 @@ import { RouterView } from 'vue-router'
 import Header from '@/components/Header.vue'
 import Navbar from "@/components/Navbar.vue"
 
-const scrollContainer = ref<HTMLElement | null>(null)
 const isScrolled = ref(false)
+const scrollContainer = ref<HTMLElement | null>(null)
 
 function handleScroll() {
   isScrolled.value = (scrollContainer.value?.scrollTop ?? 0) > 0
@@ -13,6 +13,15 @@ function handleScroll() {
 
 onMounted(() => {
   scrollContainer.value?.addEventListener('scroll', handleScroll)
+})
+
+onMounted(async () => {
+  const appBody = document.getElementById("app-body")!;
+  
+  document.documentElement.style.setProperty(
+    "--tcb-app-body-height",
+    `${appBody.offsetHeight}px`
+  );
 })
 
 onUnmounted(() => {
@@ -25,7 +34,7 @@ onUnmounted(() => {
     <Header :is-scrolled="isScrolled" />
   
     <main ref="scrollContainer" class="container-fluid" id="app-body">
-      <div class="container pt-3 pb-3">
+      <div class="container">
         <RouterView />
       </div>
     </main>

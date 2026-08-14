@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useSettingsStore } from '@/stores/settings'
 import MarkdownIt from "markdown-it"
 import taskLists from "markdown-it-task-lists"
-import { useSettingsStore } from '@/stores/settings'
 import { db } from '@/db/database'
 import AlertDialog from '@/components/AlertDialog.vue'
+import IconMoreSmall from "@/components/icons/IconMoreSmall.vue"
 
 const { t } = useI18n()
+const router = useRouter()
 const settings = useSettingsStore()
 
 const props = defineProps<{
@@ -105,12 +108,20 @@ async function removeNote() {
       <div class="flex-shrink-1">
         <div class="dropdown-center">
           <button type="button" class="btn adw-btn-circular" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 16 16" width="16px">
-              <path d="m 4 6.734375 c -0.699219 0 -1.265625 0.566406 -1.265625 1.265625 s 0.566406 1.265625 1.265625 1.265625 s 1.265625 -0.566406 1.265625 -1.265625 s -0.566406 -1.265625 -1.265625 -1.265625 z m 4 0 c -0.699219 0 -1.265625 0.566406 -1.265625 1.265625 s 0.566406 1.265625 1.265625 1.265625 s 1.265625 -0.566406 1.265625 -1.265625 s -0.566406 -1.265625 -1.265625 -1.265625 z m 4 0 c -0.699219 0 -1.265625 0.566406 -1.265625 1.265625 s 0.566406 1.265625 1.265625 1.265625 s 1.265625 -0.566406 1.265625 -1.265625 s -0.566406 -1.265625 -1.265625 -1.265625 z m 0 0" fill="#222222"/>
-            </svg>
+            <IconMoreSmall />
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><button class="dropdown-item" type="button">{{ t('common.edit') }}</button></li>
+            <li>
+              <RouterLink
+                class="dropdown-item"
+                :to="{
+                  name: 'note-edit',
+                  params: { id: props.id }
+                }"
+              >
+                {{ t('common.edit') }}
+              </RouterLink>
+            </li>
             <li><button class="dropdown-item adw-destructive-action" type="button" @click="askRemove">{{ t('common.delete') }}</button></li>
           </ul>
         </div>

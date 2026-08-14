@@ -7,13 +7,22 @@ const router = createRouter({
       path: '/',
       name: 'dump',
       component: () => import('@/views/DumpView.vue'),
+      meta: {
+        sidebar: true // NOTE: Only for testing
+      },
+    },
+    {
+      path: '/note/:id/edit',
+      name: 'note-edit',
+      component: () => import('@/views/NoteEditView.vue'),
+      meta: {
+        title: 'header.noteEditView',
+        back: true
+      },
     },
     {
       path: '/notepad',
       name: 'notepad',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('@/views/NotepadView.vue'),
     },
   ],

@@ -1,15 +1,38 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/stores/settings'
-import IconDockLeftSymbolic from '@/components/icons/IconDockLeftSymbolic.vue';
+import IconDockLeft from '@/components/icons/IconDockLeft.vue';
 import IconSunOutline from '@/components/icons/IconSunOutline.vue';
 import IconMoonOutline from '@/components/icons/IconMoonOutline.vue';
 import IconPerson from '@/components/icons/IconPerson.vue';
+import IconGoPrevious from '@/components/icons/IconGoPrevious.vue';
 
+const route = useRoute()
+const router = useRouter()
+const { t } = useI18n()
 const settings = useSettingsStore()
 
 const props = defineProps<{
   isScrolled: boolean
 }>()
+
+const title = computed(() =>
+  route.meta.title ? t(route.meta.title as string) : 'Tacalboard'
+)
+
+const hasSidebar = computed(() =>
+  route.meta.sidebar ? route.meta.sidebar : false
+)
+
+const showBackButton = computed(() =>
+  route.meta.back ? route.meta.back : false
+)
+
+function goBack() {
+  router.back()
+}
 
 function toggleTheme() {
   settings.theme = settings.theme === 'light' ? 'dark' : 'light'
@@ -23,13 +46,16 @@ function toggleTheme() {
   <header class="navbar navbar-expand-lg p-2" :class="{ 'is-scrolled': isScrolled }" id="header">
     <div class="container-fluid p-0">
       <div class="row w-100 m-0 align-items-center">
-        <div class="col-4 p-0">
-          <button class="btn">
-            <IconDockLeftSymbolic />
+        <div class="col-4 p-0 d-flex gap-2">
+          <button v-if="hasSidebar" class="btn">
+            <IconDockLeft />
+          </button>
+          <button v-if="showBackButton" class="btn" @click="goBack">
+            <IconGoPrevious />
           </button>
         </div>
         <div class="col-4 p-0 text-center">
-          <a class="navbar-brand me-auto">Tacalboard</a>
+          <a class="navbar-brand me-auto">{{ title }}</a>
         </div>
         <div class="col-4 p-0 d-flex gap-2 justify-content-end">
           <button class="btn" @click="toggleTheme">

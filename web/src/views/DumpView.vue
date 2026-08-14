@@ -107,7 +107,7 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
-  <div class="d-grid gap-3 mt-3">
+  <div class="d-grid gap-3 mt-3 pt-3 pb-3">
     <NoteCard
       v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
       :key="note.id"

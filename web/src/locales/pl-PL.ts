@@ -8,6 +8,9 @@ export default {
   dates: {
     today: 'Dzisiaj'
   },
+  header: {
+    noteEditView: 'Edycja notatki',
+  },
   navbar: {
     dump: 'Karteczki',
     notepad: 'Notatnik'
@@ -16,6 +19,5 @@ export default {
     composerPlaceholder: 'Uchwyć myśl...',
     deleteTitle: 'Usunąć notatkę?',
     deleteMessage: 'Czy na pewno chcesz usunąć tę notatkę? Tej operacji nie można cofnąć.',
-    deleteConfirm: 'Usuń'
   }
 }

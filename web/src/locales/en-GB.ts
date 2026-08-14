@@ -8,6 +8,9 @@ export default {
   dates: {
     today: 'Today'
   },
+  header: {
+    noteEditView: 'Note edit' // TODO: Check note editing?
+  },
   navbar: {
     dump: 'Dump',
     notepad: 'Notepad'
@@ -16,6 +19,5 @@ export default {
     composerPlaceholder: 'Capture a thought...',
     deleteTitle: 'Delete note?',
     deleteMessage: 'Are you sure you want to delete this note? This cannot be undone.',
-    deleteConfirm: 'Delete'
   }
 }
