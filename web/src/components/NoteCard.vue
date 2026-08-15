@@ -171,4 +171,36 @@ async function removeNote() {
   padding-left: 1rem;
   color: var(--adw-accent-slate-standalone);
 }
+
+:deep(ul.contains-task-list) {
+  list-style: none;
+  padding-left: 0;
+}
+
+:deep(ul.contains-task-list:last-child) {
+  margin-bottom: 0;
+}
+
+:deep(li.task-list-item) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  
+  @media (pointer: coarse) {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .task-list-item-checkbox {
+    min-width: 1rem;
+    min-height: 1rem;
+
+    @media (pointer: coarse) {
+      min-width: 2rem;
+      min-height: 2rem;
+    }
+  }
+}
 </style>
