@@ -6,12 +6,20 @@
         {
             "label": "Connect to root container",
             "type": "shell",
-            "command": "flatpak-spawn --host podman run -it --rm --entrypoint bash --workdir /mnt -v ./:/mnt:z node:24-slim"
+        "command": "flatpak-spawn --host podman run -it --rm --entrypoint bash --workdir /mnt -v ./:/mnt:z node:24-slim",
+        "problemMatcher": []
         },
         {
-            "label": "Connect to Web container",
+        "label": "Start Web dev container",
+        "type": "shell",
+        "command": "flatpak-spawn --host podman run --rm --workdir /mnt/web -p 5173:5173 -p 4173:4173 -v ./:/mnt:z node:24-slim npm run dev -- --host",
+        "problemMatcher": []
+      },
+      {
+        "label": "Start Server dev container",
             "type": "shell",
-            "command": "flatpak-spawn --host podman run -it --rm --entrypoint bash --workdir /mnt/web -p 5173:5173 -p 4173:4173 -v ./:/mnt:z node:24-slim"
+        "command": "flatpak-spawn --host podman run --rm --workdir /mnt/server -p 8080:8080 -v ./:/mnt:z node:24-slim npm run dev",
+        "problemMatcher": []
         },
         {
             "label": "Connect to Server container",

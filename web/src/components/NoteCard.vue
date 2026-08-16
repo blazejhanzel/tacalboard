@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
 import MarkdownIt from "markdown-it"
 import { tasklist } from '@mdit/plugin-tasklist'
@@ -10,13 +10,12 @@ import AlertDialog from '@/components/AlertDialog.vue'
 import IconMoreSmall from "@/components/icons/IconMoreSmall.vue"
 
 const { t } = useI18n()
-const router = useRouter()
 const settings = useSettingsStore()
 
 const props = defineProps<{
   id: string,
+  content: string
   date: Date,
-  text: string
 }>()
 
 const showRemoveDialog = ref(false)
@@ -89,7 +88,7 @@ const md = new MarkdownIt({
     disabled: false
   })
 
-const html = computed(() => md.render(props.text))
+const html = computed(() => md.render(props.content))
 
 function handleTaskChange(event: Event) {
   const target = event.target
@@ -106,7 +105,7 @@ function handleTaskChange(event: Event) {
 }
 
 async function toggleTask(taskIndex: number, checked: boolean) {
-  const lines = props.text.split('\n')
+  const lines = props.content.split('\n')
 
   let currentIndex = 0
 
@@ -127,9 +126,9 @@ async function toggleTask(taskIndex: number, checked: boolean) {
     currentIndex++
   }
 
-  const text = lines.join('\n')
+  const content = lines.join('\n')
 
-  await db.notes.update(props.id, { text })
+  await db.notes.update(props.id, { content })
 }
 
 function askRemove() {

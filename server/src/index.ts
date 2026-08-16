@@ -29,6 +29,12 @@ await app.register(notesRoutes, {
     prefix: "/api/notes"
 });
 
+app.get('/api/status', async () => {
+  return {
+    status: 'ok'
+  }
+})
+
 await app.listen({
   port: 8080,
   host: "0.0.0.0"

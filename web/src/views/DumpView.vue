@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { liveQuery } from 'dexie'
 import type { Note } from '@tacalboard/shared';
-import { db } from '@/database/database'
+import { createNote, observeNotes } from '@/database/notes';
 import NoteCard from "@/components/NoteCard.vue"
 import IconPaperPlane from '@/components/icons/IconPaperPlane.vue'
 
@@ -16,12 +15,7 @@ const isClickingSendButton = ref(false)
 
 const dumpTextarea = ref<HTMLTextAreaElement | null>(null)
 
-const notesSubscription = liveQuery(() =>
-  db.notes
-    .orderBy('modifiedAt')
-    .reverse()
-    .toArray()
-).subscribe({
+const notesSubscription = observeNotes().subscribe({
   next: value => {
     notes.value = value
   },
@@ -35,20 +29,7 @@ async function addNote() {
 
   if (!content) return
 
-  const now = new Date()
-
-  await db.notes.add({
-    id: (() => {
-      try {
-        return crypto.randomUUID()
-      } catch {
-        return `${Date.now()}-${Math.random().toString(36).slice(2)}`
-      }
-    })(),
-    content,
-    createdAt: now,
-    modifiedAt: now
-  })
+  createNote(content)
 
   newNote.value = ''
   isWritingDumpNote.value = false
@@ -113,8 +94,8 @@ onUnmounted(() => {
       v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
       :key="note.id"
       :id="note.id"
+      :content="note.content"
       :date="note.modifiedAt"
-      :text="note.text"
     />
   </div>
 </template>
