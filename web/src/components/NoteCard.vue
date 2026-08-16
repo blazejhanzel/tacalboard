@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
 import MarkdownIt from "markdown-it"
 import { tasklist } from '@mdit/plugin-tasklist'
-import { db } from '@/db/database'
+import { db } from '@/database/database'
 import AlertDialog from '@/components/AlertDialog.vue'
 import IconMoreSmall from "@/components/icons/IconMoreSmall.vue"
 

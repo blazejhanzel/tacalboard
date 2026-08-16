@@ -1,11 +1,5 @@
 import { Dexie, type EntityTable } from 'dexie'
-
-export interface Note {
-  id: string
-  text: string
-  createdAt: Date
-  modifiedAt: Date
-}
+import type { Note } from '@tacalboard/shared';
 
 export const db = new Dexie('tacalboard') as Dexie & {
   notes: EntityTable<Note, 'id'>

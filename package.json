@@ -1,0 +1,10 @@
+{
+    "name": "tacalboard",
+    "private": true,
+    "workspaces": [
+        "web",
+        "server",
+        "shared"
+    ],
+    "allowScripts": {}
+}

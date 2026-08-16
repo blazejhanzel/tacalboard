@@ -2,7 +2,7 @@
 import { ref, nextTick, onMounted, onUnmounted } from "vue"
 import { useI18n } from 'vue-i18n'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
-import { db } from '@/db/database'
+import { db } from '@/database/database'
 
 const { t } = useI18n()
 const route = useRoute()

@@ -2,7 +2,8 @@
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { liveQuery } from 'dexie'
-import { db, type Note } from '@/db/database'
+import type { Note } from '@tacalboard/shared';
+import { db } from '@/database/database'
 import NoteCard from "@/components/NoteCard.vue"
 import IconPaperPlane from '@/components/icons/IconPaperPlane.vue'
 
@@ -30,9 +31,9 @@ const notesSubscription = liveQuery(() =>
 })
 
 async function addNote() {
-  const text = newNote.value.trim()
+  const content = newNote.value.trim()
 
-  if (!text) return
+  if (!content) return
 
   const now = new Date()
 
@@ -44,7 +45,7 @@ async function addNote() {
         return `${Date.now()}-${Math.random().toString(36).slice(2)}`
       }
     })(),
-    text,
+    content,
     createdAt: now,
     modifiedAt: now
   })
