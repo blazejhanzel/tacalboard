@@ -1,5 +1,5 @@
 {
-  "name": "tacalboard",
+  "name": "tacalboard-web",
   "description": "A self-hosted personal organizer with notes, tasks and calendar.",
   "version": "0.1.0",
   "private": true,
