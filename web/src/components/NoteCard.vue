@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
 import MarkdownIt from "markdown-it"
-import taskLists from "markdown-it-task-lists"
+import { tasklist } from '@mdit/plugin-tasklist'
 import { db } from '@/db/database'
 import AlertDialog from '@/components/AlertDialog.vue'
 import IconMoreSmall from "@/components/icons/IconMoreSmall.vue"
@@ -85,9 +85,52 @@ const dateFormatted = (() => {
   
 const md = new MarkdownIt({
     breaks: true
-  }).use(taskLists)
+  }).use(tasklist as any, {
+    disabled: false
+  })
 
 const html = computed(() => md.render(props.text))
+
+function handleTaskChange(event: Event) {
+  const target = event.target
+
+  if (!(target instanceof HTMLInputElement)) return
+  if (target.type !== 'checkbox') return
+  if (!target.id.startsWith('task-item-')) return
+
+  const taskIndex = Number(target.id.replace('task-item-', ''))
+
+  if (Number.isNaN(taskIndex)) return
+
+  toggleTask(taskIndex, target.checked)
+}
+
+async function toggleTask(taskIndex: number, checked: boolean) {
+  const lines = props.text.split('\n')
+
+  let currentIndex = 0
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+
+    if (!line || !/^\s*[-*+]\s+\[[ xX]\]/.test(line)) continue
+
+    if (currentIndex === taskIndex) {
+      lines[i] = line.replace(
+        /^(\s*[-*+]\s+)\[[ xX]\]/,
+        `$1[${checked ? 'x' : ' '}]`
+      )
+
+      break
+    }
+
+    currentIndex++
+  }
+
+  const text = lines.join('\n')
+
+  await db.notes.update(props.id, { text })
+}
 
 function askRemove() {
   showRemoveDialog.value = true
@@ -127,7 +170,7 @@ async function removeNote() {
         </div>
       </div>
     </div>
-    <div class="card-body pt-0" v-html="html"></div>
+    <div class="card-body pt-0" v-html="html" @change="handleTaskChange"></div>
   </div>
   <AlertDialog
     :visible="showRemoveDialog"
@@ -172,35 +215,18 @@ async function removeNote() {
   color: var(--adw-accent-slate-standalone);
 }
 
-:deep(ul.contains-task-list) {
+:deep(ul.task-list-container) {
   list-style: none;
-  padding-left: 0;
+  padding-left: 1rem;
 }
 
-:deep(ul.contains-task-list:last-child) {
+:deep(ul.task-list-container:last-child) {
   margin-bottom: 0;
 }
 
 :deep(li.task-list-item) {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding-top: 0.125rem;
-  padding-bottom: 0.125rem;
-  
-  @media (pointer: coarse) {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-
   .task-list-item-checkbox {
-    min-width: 1rem;
-    min-height: 1rem;
-
-    @media (pointer: coarse) {
-      min-width: 2rem;
-      min-height: 2rem;
-    }
+    margin-right: 0.5rem;
   }
 }
 </style>
