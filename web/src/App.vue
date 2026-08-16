@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { RouterView } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useRoute, RouterView } from 'vue-router'
 import Header from '@/components/Header.vue'
 import Navbar from "@/components/Navbar.vue"
 
+const route = useRoute()
+
 const isScrolled = ref(false)
 const scrollContainer = ref<HTMLElement | null>(null)
+  
+const bottomBarComponents = {
+  navbar: Navbar,
+}
+
+const showBottomBar = computed(() => route.meta.bottomBar ?? true)
+
+const bottomBarComponent = computed(() => {
+  const type = route.meta.bottomBar
+
+  return type === 'navbar' // || type === 'toolbar'
+    ? bottomBarComponents[type]
+    : null
+})
 
 function handleScroll() {
   isScrolled.value = (scrollContainer.value?.scrollTop ?? 0) > 0
@@ -38,7 +54,8 @@ onUnmounted(() => {
         <RouterView />
       </div>
     </main>
-    <Navbar />
+
+    <component :is="bottomBarComponent" v-if="showBottomBar" />
   </div>
 </template>
 

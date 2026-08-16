@@ -1,5 +1,6 @@
 export default {
   app: {
+    settings: 'Ustawienia',
     theme: 'Motyw',
     themes: {
       system: 'Systemowy',
@@ -18,9 +19,10 @@ export default {
   },
   header: {
     noteEditView: 'Edycja notatki',
+    settingsView: 'Ustawienia',
   },
   navbar: {
-    dump: 'Karteczki',
+    dump: 'Stos',
     notepad: 'Notatnik'
   },
   notes: {

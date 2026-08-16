@@ -1,5 +1,6 @@
 export default {
   app: {
+    settings: 'Settings',
     theme: 'Theme',
     themes: {
       system: 'System',
@@ -17,7 +18,8 @@ export default {
     today: 'Today'
   },
   header: {
-    noteEditView: 'Note edit' // TODO: Check note editing?
+    noteEditView: 'Note edit', // TODO: Check note editing?
+    settingsView: 'Settings',
   },
   navbar: {
     dump: 'Dump',
