@@ -1,4 +1,12 @@
 export default {
+  app: {
+    theme: 'Motyw',
+    themes: {
+      system: 'Systemowy',
+      light: 'Jasny',
+      dark: 'Ciemny',
+    }
+  },
   common: {
     cancel: 'Anuluj',
     save: 'Zapisz',

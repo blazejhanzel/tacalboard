@@ -3,9 +3,13 @@
   <head>
     <meta charset="UTF-8">
     <script>
-      const theme = localStorage.getItem('settings')
-        ? JSON.parse(localStorage.getItem('settings')).theme
-        : 'light'
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      const storedSettings = localStorage.getItem('settings')
+      const settings = storedSettings ? JSON.parse(storedSettings) : null
+
+      const theme = settings?.theme === 'system'
+        ? mediaQuery.matches ? 'dark' : 'light'
+        : settings?.theme ?? 'light'
 
       document.documentElement.setAttribute('data-bs-theme', theme)
       document.documentElement.setAttribute('data-custom-theme', theme)

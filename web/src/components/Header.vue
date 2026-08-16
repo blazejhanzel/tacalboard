@@ -35,13 +35,6 @@ const showBackButton = computed(() =>
 function goBack() {
   router.back()
 }
-
-function toggleTheme() {
-  settings.theme = settings.theme === 'light' ? 'dark' : 'light'
-
-  document.documentElement.setAttribute('data-bs-theme', settings.theme)
-  document.documentElement.setAttribute('data-custom-theme', settings.theme)
-}
 </script>
 
 <template>
@@ -60,21 +53,70 @@ function toggleTheme() {
           <a class="navbar-brand me-auto">{{ title }}</a>
         </div>
         <div class="col-4 p-0 d-flex gap-2 justify-content-end">
-          <button class="btn" @click="toggleTheme">
-            <IconSunOutline v-if="settings.theme == 'light'" />
-            <IconMoonOutline v-else />
-          </button>
           <div class="dropdown-center">
-            <button class="btn" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+            <button
+              class="btn"
+              data-bs-toggle="dropdown"
+              data-bs-display="static"
+              data-bs-auto-close="outside"
+              aria-expanded="false"
+            >
               <IconPerson />
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li>
-                <button class="dropdown-item d-flex gap-2 align-items-center" type="button" disabled>
-                  <IconNetworkServer />
-                  <span>{{ appVersion }}</span>
-                </button>
+                <div class="btn-group dropstart w-100">
+                  <button
+                    class="dropdown-item d-flex gap-2 align-items-center"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false"
+                  >
+                    <IconGoPrevious />
+                    <span>{{ t('app.theme') }}</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <button
+                        class="dropdown-item d-flex gap-2 align-items-center w-100"
+                        type="button"
+                        @click="settings.theme = 'system'"
+                        :disabled="settings.theme === 'system'"
+                      >
+                        {{ t('app.themes.system') }}
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="dropdown-item d-flex gap-2 align-items-center w-100"
+                        type="button"
+                        @click="settings.theme = 'light'"
+                        :disabled="settings.theme === 'light'"
+                      >
+                        {{ t('app.themes.light') }}
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        class="dropdown-item d-flex gap-2 align-items-center w-100"
+                        type="button"
+                        @click="settings.theme = 'dark'"
+                        :disabled="settings.theme === 'dark'"
+                      >
+                        {{ t('app.themes.dark') }}
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </li>
+                <li><hr class="dropdown-divider m-1"></li>
+                <li>
+                  <button class="dropdown-item d-flex gap-2 align-items-center w-100" type="button" disabled>
+                    <IconNetworkServer />
+                    <span>{{ appVersion }}</span>
+                  </button>
+                </li>
             </ul>
           </div>
         </div>

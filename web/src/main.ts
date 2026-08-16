@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { registerSW } from 'virtual:pwa-register'
 import { i18n } from './i18n'
+import { useTheme } from '@/composables/useTheme'
 
 import '@/assets/theme.scss'
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -28,5 +29,7 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.use(i18n)
+
+useTheme()
 
 app.mount('#app')

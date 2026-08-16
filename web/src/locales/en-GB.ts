@@ -1,4 +1,12 @@
 export default {
+  app: {
+    theme: 'Theme',
+    themes: {
+      system: 'System',
+      light: 'Light',
+      dark: 'Dark',
+    }
+  },
   common: {
     cancel: 'Cancel',
     save: 'Save',
