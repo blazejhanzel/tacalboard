@@ -128,7 +128,8 @@ onUnmounted(() => {
   
   &.editing {
     position: fixed;
-    inset: auto 0 calc(var(--tcb-bottom-navbar-height) + 4px);
+    bottom:
+      calc(var(--tcb-bottom-navbar-height) + 4px);
     left: 0;
     right: 0;
     top: auto;
@@ -138,7 +139,6 @@ onUnmounted(() => {
     &.editing {
       position: sticky;
       top: 16px;
-      inset: auto;
     }
   }
 }
