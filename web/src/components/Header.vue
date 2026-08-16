@@ -4,10 +4,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/stores/settings'
 import IconDockLeft from '@/components/icons/IconDockLeft.vue';
-import IconSunOutline from '@/components/icons/IconSunOutline.vue';
-import IconMoonOutline from '@/components/icons/IconMoonOutline.vue';
-import IconPerson from '@/components/icons/IconPerson.vue';
 import IconGoPrevious from '@/components/icons/IconGoPrevious.vue';
+import IconMoonOutline from '@/components/icons/IconMoonOutline.vue';
+import IconNetworkServer from '@/components/icons/IconNetworkServer.vue';
+import IconSunOutline from '@/components/icons/IconSunOutline.vue';
+import IconPerson from '@/components/icons/IconPerson.vue';
+const appVersion = __APP_VERSION__
 
 const route = useRoute()
 const router = useRouter()
@@ -62,9 +64,19 @@ function toggleTheme() {
             <IconSunOutline v-if="settings.theme == 'light'" />
             <IconMoonOutline v-else />
           </button>
-          <button class="btn">
-            <IconPerson />
-          </button>
+          <div class="dropdown-center">
+            <button class="btn" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+              <IconPerson />
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <button class="dropdown-item d-flex gap-2 align-items-center" type="button" disabled>
+                  <IconNetworkServer />
+                  <span>{{ appVersion }}</span>
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

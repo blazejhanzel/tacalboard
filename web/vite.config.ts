@@ -4,6 +4,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import { VitePWA } from 'vite-plugin-pwa'
+import { readFileSync } from 'node:fs'
+
+const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,7 +19,7 @@ export default defineConfig({
       manifest: {
         name: 'Tacalboard',
         short_name: 'Tacalboard',
-        description: 'Quick capture notes and tasks',
+        description: 'A self-hosted personal organizer with notes, tasks and calendar.',
         theme_color: '#dce0e8',
         background_color: '#eff1f5',
         display: 'standalone',
@@ -40,5 +43,8 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(packageJson.version)
   },
 })

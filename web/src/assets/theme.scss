@@ -62,6 +62,7 @@ body {
 .card {
   background-color: var(--adw-card-bg-color);
   color: var(--adw-card-fg-color);
+  border: 0;
   border-radius: var(--adw-border-radius) !important;
   box-shadow:
     0 0.125rem 0.25rem var(--adw-card-shade-color);
@@ -70,12 +71,14 @@ body {
 .card-header {
   background-color: transparent;
   color: var(--adw-card-fg-color);
+  border: 0;
   border-radius: var(--adw-border-radius) !important;
 }
 
 .dropdown-menu {
   background-color: var(--adw-popover-bg-color);
   color: var(--adw-popover-fg-color);
+  border: 0;
   border-radius: var(--adw-border-radius) !important;
   padding: 4px;
   box-shadow:
