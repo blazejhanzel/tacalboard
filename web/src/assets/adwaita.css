@@ -82,7 +82,7 @@
   --adw-destructive-color: #c30000;
   --adw-dialog-bg-color: #fafafb;
   --adw-dialog-fg-color: rgb(0 0 6 / 80%);
-  --adw-dialog-overlay: rgb(0 0 0 / 16%);
+  --adw-dialog-overlay: rgb(0 0 0 / 50%);
 }
 
 [data-custom-theme="dark"] {
@@ -108,5 +108,5 @@
   --adw-destructive-color: #ff938c;
   --adw-dialog-bg-color: #36363a;
   --adw-dialog-fg-color: #ffffff;
-  --adw-dialog-overlay: rgb(255 255 255 / 82%);
+  --adw-dialog-overlay: rgb(0 0 0 / 50%);
 }
