@@ -4,5 +4,5 @@ import type { SyncOperation } from './syncOperation.js'
 export interface SyncRequest {
   operations: SyncOperation[] | null
   notes: Note[]
-  cursor: number | null
+  syncCursor: number | null
 }

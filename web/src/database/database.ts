@@ -6,11 +6,11 @@ import type { KeyValuePair, Note, SyncOperation } from '@tacalboard/shared'
 export const db = new Dexie('tacalboard') as Dexie & {
   notes: EntityTable<Note, 'id'>
   syncOperations: EntityTable<SyncOperation, 'id'>
-  syncStatuses: EntityTable<KeyValuePair, 'key'>
+  systemStatuses: EntityTable<KeyValuePair, 'key'>
 }
 
 db.version(1).stores({
   notes: 'id, createdAt, modifiedAt',
   syncOperations: '++id, [entityType+entityId]',
-  syncStatuses: 'key, value',
+  systemStatuses: 'key, value',
 })

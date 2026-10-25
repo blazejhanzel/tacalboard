@@ -9,13 +9,12 @@ async function sync() {
   syncStatus.value = 'syncing'
 
   const operations = await db.syncOperations.toArray()
-  const syncStatuses = await db.syncStatuses.toArray()
-  const cursor = syncStatuses[0]?.value | null // TODO: Check cursor set
+  const syncCursor = Number((await db.systemStatuses.get('lastSync'))?.value ?? 0)
   
   const request: SyncRequest = {
     operations,
     notes: [],
-    cursor
+    syncCursor
   }
 
   for (const operation of operations) {
@@ -31,18 +30,6 @@ async function sync() {
   }
 
   console.log(request)
-  //const response = await proceedResponse(await sendRequest(request))
-
-  await updateSyncStatus()
-}
-
-async function fullSync() {
-  const request: SyncRequest = {
-    operations: await db.syncOperations.toArray(),
-    notes: await db.notes.toArray(),
-    cursor: null
-  }
-
   const response = await proceedResponse(await sendRequest(request))
 
   await updateSyncStatus()
