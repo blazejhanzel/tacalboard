@@ -2,17 +2,20 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import IconCloudDisabled from '@/components/icons/IconCloudDisabled.vue';
-import IconCloudFilled from '@/components/icons/IconCloudFilled.vue';
-import IconUpdate from '@/components/icons/IconUpdate.vue';
-import IconDockLeft from '@/components/icons/IconDockLeft.vue';
-import IconGoPrevious from '@/components/icons/IconGoPrevious.vue';
-import IconOpenMenu from '@/components/icons/IconOpenMenu.vue';
+import IconCloudDisabled from '@/components/icons/IconCloudDisabled.vue'
+import IconCloudFilled from '@/components/icons/IconCloudFilled.vue'
+import IconUpdate from '@/components/icons/IconUpdate.vue'
+import IconDockLeft from '@/components/icons/IconDockLeft.vue'
+import IconGoPrevious from '@/components/icons/IconGoPrevious.vue'
+import IconOpenMenu from '@/components/icons/IconOpenMenu.vue'
+import { useSync } from '@/composables/useSync'
 
 const appVersion = __APP_VERSION__
+const developmentRun = import.meta.env.DEV
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+const sync = useSync()
 
 const props = defineProps<{
   isScrolled: boolean
@@ -22,10 +25,6 @@ const title = computed(() => route.meta.title ? t(route.meta.title as string) : 
 const hasSidebar = computed(() => route.meta.sidebar ?? false)
 const showBackButton = computed(() => route.meta.navigationBack ?? false)
 const showAppMenu = computed(() => route.meta.showAppMenu ?? true)
-
-const serverStatus = computed(() => {
-  return 'synced'
-})
 
 function goBack() {
   router.back()
@@ -48,10 +47,10 @@ function goBack() {
           <a class="navbar-brand me-auto">{{ title }}</a>
         </div>
         <div class="col-4 p-0 d-flex gap-2 justify-content-end">
-          <button class="btn" disabled>
-            <IconCloudFilled v-if="serverStatus === 'synced'" />
-            <IconUpdate v-else-if="serverStatus === 'syncing'"/>
-            <IconCloudDisabled v-else-if="serverStatus === 'not-synced'"/>
+          <button class="btn" :disabled="!developmentRun" @click="sync.sync">
+            <IconCloudFilled v-if="sync.syncStatus.value === 'synced'" />
+            <IconUpdate v-else-if="sync.syncStatus.value === 'syncing'"/>
+            <IconCloudDisabled v-else-if="sync.syncStatus.value === 'not-synced'"/>
           </button>
           <div v-if="showAppMenu" class="dropdown-center">
             <button

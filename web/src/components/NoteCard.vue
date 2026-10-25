@@ -5,9 +5,9 @@ import { RouterLink } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
 import MarkdownIt from "markdown-it"
 import { tasklist } from '@mdit/plugin-tasklist'
-import { db } from '@/database/database'
 import AlertDialog from '@/components/AlertDialog.vue'
 import IconMoreSmall from "@/components/icons/IconMoreSmall.vue"
+import { updateNote, deleteNote } from "@/database/notes"
 
 const { t } = useI18n()
 const settings = useSettingsStore()
@@ -128,7 +128,7 @@ async function toggleTask(taskIndex: number, checked: boolean) {
 
   const content = lines.join('\n')
 
-  await db.notes.update(props.id, { content })
+  await updateNote(props.id, content)
 }
 
 function askRemove() {
@@ -136,7 +136,7 @@ function askRemove() {
 }
 
 async function removeNote() {
-  await db.notes.delete(props.id)
+  await deleteNote(props.id)
   showRemoveDialog.value = false
 }
 </script>

@@ -1,1 +1,4 @@
-export * from './types/note';
+export * from './types/keyValuePair.js'
+export * from './types/note.js'
+export * from './types/syncOperation.js'
+export * from './types/syncRequest.js'

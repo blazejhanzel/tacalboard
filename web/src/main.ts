@@ -4,6 +4,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { registerSW } from 'virtual:pwa-register'
 import { i18n } from './i18n'
 import { useTheme } from '@/composables/useTheme'
+import { useSync } from '@/composables/useSync.ts'
 
 import '@/assets/theme.scss'
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -30,6 +31,10 @@ app.use(pinia)
 app.use(router)
 app.use(i18n)
 
-useTheme()
+const theme = useTheme()
+theme.handleSystemThemeChange()
+
+const sync = useSync()
+sync.initializeSync()
 
 app.mount('#app')

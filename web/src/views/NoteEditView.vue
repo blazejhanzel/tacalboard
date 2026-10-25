@@ -2,18 +2,17 @@
 import { ref, nextTick, onMounted, onUnmounted } from "vue"
 import { useI18n } from 'vue-i18n'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
-import { db } from '@/database/database'
+import { readNote, updateNote } from "@/database/notes"
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
-const noteText = ref('')
+const noteContent = ref('')
 const textarea = ref<HTMLTextAreaElement | null>(null)
 
 let saveTimeout: ReturnType<typeof setTimeout> | null = null
-let unchangedText = ''
-let latelySavedText = ''
+let latelySavedContent = ''
 
 function scheduleSave() {
   if (saveTimeout) {
@@ -33,31 +32,27 @@ function handleVisibilityChange() {
 
 async function saveNote() {
   const id = route.params.id as string
-  const text = noteText.value.trim()
+  const content = noteContent.value.trim()
 
-  if (!text || text === latelySavedText) return
+  if (!content || content === latelySavedContent) return
 
-  await db.notes.update(id, {
-    text,
-    modifiedAt: new Date()
-  })
+  await updateNote(id, content)
 
-  latelySavedText = text
+  latelySavedContent = content
 }
 
 onMounted(async () => {
   const id = route.params.id as string
 
-  const note = await db.notes.get(id)
+  const note = await readNote(id)
 
   if (!note) {
     await router.replace('/')
     return
   }
 
-  noteText.value = note.text
-  unchangedText = note.text
-  latelySavedText = note.text
+  noteContent.value = note.content
+  latelySavedContent = note.content
 
   await nextTick()
 
@@ -86,7 +81,7 @@ onBeforeRouteLeave(async () => {
 
 <template>
   <textarea
-    v-model="noteText"
+    v-model="noteContent"
     ref="textarea"
     class="form-control p-3 border-0 shadow-none w-100 align-self-center"
     @input="scheduleSave"

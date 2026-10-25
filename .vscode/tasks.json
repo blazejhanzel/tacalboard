@@ -4,27 +4,22 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Connect to root container",
-            "type": "shell",
+        "label": "Connect to root container",
+        "type": "shell",
         "command": "flatpak-spawn --host podman run -it --rm --entrypoint bash --workdir /mnt -v ./:/mnt:z node:24-slim",
         "problemMatcher": []
         },
         {
         "label": "Start Web dev container",
         "type": "shell",
-        "command": "flatpak-spawn --host podman run --rm --workdir /mnt/web -p 5173:5173 -p 4173:4173 -v ./:/mnt:z node:24-slim npm run dev -- --host",
+        "command": "flatpak-spawn --host podman stop tcb-web; flatpak-spawn --host podman run --name tcb-web --rm --workdir /mnt/web -p 5173:5173 -p 4173:4173 -v ./:/mnt:z node:24-slim npm run dev -- --host",
         "problemMatcher": []
       },
       {
         "label": "Start Server dev container",
-            "type": "shell",
-        "command": "flatpak-spawn --host podman run --rm --workdir /mnt/server -p 8080:8080 -v ./:/mnt:z node:24-slim npm run dev",
+        "type": "shell",
+        "command": "flatpak-spawn --host podman stop tcb-server; flatpak-spawn --host podman run --name tcb-server --rm --workdir /mnt/server -p 8080:8080 -v ./:/mnt:z node:24-slim npm run dev",
         "problemMatcher": []
-        },
-        {
-            "label": "Connect to Server container",
-            "type": "shell",
-            "command": "flatpak-spawn --host podman run -it --rm --entrypoint bash --workdir /mnt/server -p 8080:8080 -v ./:/mnt:z node:24-slim"
-        }
+      }
     ]
 }

@@ -1,33 +1,33 @@
-import Fastify from "fastify";
-import swagger from "@fastify/swagger";
-import swaggerUi from "@fastify/swagger-ui";
-import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
-import QRCode from "qrcode";
+import Fastify from "fastify"
+import swagger from "@fastify/swagger"
+import swaggerUi from "@fastify/swagger-ui"
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox"
+import QRCode from "qrcode"
 
-import notesRoutes from "./routes/notes.js";
+import syncRoutes from "@/routes/sync.js"
 
 const app = Fastify({
-    logger: true
-}).withTypeProvider<TypeBoxTypeProvider>();
+  logger: true
+}).withTypeProvider<TypeBoxTypeProvider>()
 
 await app.register(swagger, {
-    openapi: {
-        openapi: "3.0.3",
-        info: {
-            title: "Tacalboard API",
-            description: "API for Tacalboard",
-            version: "0.1.0"
-        }
+  openapi: {
+    openapi: "3.0.3",
+    info: {
+      title: "Tacalboard API",
+      description: "API for Tacalboard",
+      version: "0.1.0"
     }
-});
+  }
+})
 
 await app.register(swaggerUi, {
-    routePrefix: "/docs"
-});
+  routePrefix: "/docs"
+})
 
-await app.register(notesRoutes, {
-    prefix: "/api/notes"
-});
+await app.register(syncRoutes, {
+  prefix: "/api/sync"
+})
 
 app.get('/api/status', async () => {
   return {
@@ -38,4 +38,4 @@ app.get('/api/status', async () => {
 await app.listen({
   port: 8080,
   host: "0.0.0.0"
-});
+})
