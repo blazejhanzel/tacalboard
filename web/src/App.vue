@@ -37,7 +37,14 @@ onMounted(async () => {
   document.documentElement.style.setProperty(
     "--tcb-app-body-height",
     `${appBody.offsetHeight}px`
-  );
+  )
+
+  const isIOSApp = navigator.standalone === true
+
+  document.documentElement.classList.toggle(
+    'ios-app',
+    isIOSApp
+  )
 })
 
 onUnmounted(() => {
@@ -62,8 +69,15 @@ onUnmounted(() => {
 <style>
 .app {
   height: 100dvh;
+  padding-bottom: calc(env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
+}
+
+html.ios-app .app {
+  height: 100vh !important;
+  padding-top: calc(1em + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important;
 }
 
 #app-body {
