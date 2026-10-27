@@ -15,7 +15,12 @@ export default defineConfig({
     vueDevTools(),
     VitePWA({
       registerType: 'autoUpdate',
-
+      workbox: {
+        navigateFallbackDenylist: [
+          /^\/api(?:\/|$)/,
+          /^\/docs(?:\/|$)/,
+        ]
+      },
       manifest: {
         name: 'Tacalboard',
         short_name: 'Tacalboard',
