@@ -89,7 +89,7 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
-  <div class="d-grid gap-3 mt-3 pt-3 pb-3">
+  <div v-if="notes.length > 0" class="d-grid gap-3 mt-3 pt-3 pb-3">
     <NoteCard
       v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
       :key="note.id"
@@ -97,6 +97,11 @@ onUnmounted(() => {
       :content="note.content"
       :date="note.modifiedAt"
     />
+  </div>
+  <div v-else id="empty-placeholder" class="d-flex align-items-center gap-3 pt-3 pb-3 text-center">
+    <div class="m-auto">
+      {{t('notes.emptyPlaceholder')}}
+    </div>
   </div>
 </template>
 
@@ -111,7 +116,7 @@ onUnmounted(() => {
   &.editing {
     position: fixed;
     bottom:
-      calc(var(--tcb-bottom-navbar-height) + 4px);
+      calc(var(--tcb-bottom-navbar-height) + 1rem);
     left: 0;
     right: 0;
     top: auto;
@@ -131,5 +136,9 @@ onUnmounted(() => {
   max-height: 40vh;
   background-color: transparent;
   border-radius: var(--adw-border-radius);
+}
+
+#empty-placeholder {
+  height: calc(100% - var(--tcb-bottom-navbar-height) - 16px);
 }
 </style>

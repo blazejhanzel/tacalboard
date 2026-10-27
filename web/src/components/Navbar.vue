@@ -44,7 +44,6 @@ onMounted(async () => {
 .container-fluid {
   background-color: var(--adw-window-bg-color);
   padding: 0.5rem;
-  /* padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)) !important; */
   z-index: 1050;
   box-shadow:
     0 -1px 1px rgb(0 0 0 / 12%),
