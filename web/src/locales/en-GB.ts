@@ -27,6 +27,7 @@ export default {
   },
   notes: {
     composerPlaceholder: 'Capture a thought...',
+    emptyPlaceholder: 'Nothing to show, start with capturing first thought',
     deleteTitle: 'Delete note?',
     deleteMessage: 'Are you sure you want to delete this note? This cannot be undone.',
   }

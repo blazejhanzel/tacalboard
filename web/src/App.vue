@@ -57,7 +57,7 @@ onUnmounted(() => {
     <Header :is-scrolled="isScrolled" />
   
     <main ref="scrollContainer" class="container-fluid" id="app-body">
-      <div class="container">
+      <div class="container h-100">
         <RouterView />
       </div>
     </main>
