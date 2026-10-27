@@ -1,6 +1,14 @@
-import { DatabaseSync } from "node:sqlite";
+import { mkdirSync } from "node:fs"
+import { join } from "node:path"
+import { DatabaseSync } from "node:sqlite"
 
-export const db = new DatabaseSync("data/tacalboard.db");
+const dataDir = process.env.TACALBOARD_DATA_DIR ?? "data"
+
+mkdirSync(dataDir, { recursive: true })
+
+export const db = new DatabaseSync(
+  join(dataDir, "tacalboard.db")
+)
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS notes (
