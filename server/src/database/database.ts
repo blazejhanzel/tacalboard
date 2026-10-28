@@ -22,7 +22,7 @@ db.exec(`
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS changes (
-    sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     operation TEXT NOT NULL,
     entity_type TEXT NOT NULL,
     entity_id TEXT NOT NULL

@@ -6,10 +6,15 @@ import type { SyncStatus } from '@/types/syncStatus'
 const syncStatus = ref<SyncStatus>('synced')
 
 async function sync() {
+  if (syncStatus.value == 'syncing') {
+    // If sync operation is pending, don't force syncing again
+    return
+  }
+
   syncStatus.value = 'syncing'
 
   const operations = await db.syncOperations.toArray()
-  const syncCursor = Number((await db.systemStatuses.get('lastSync'))?.value ?? 0)
+  const syncCursor = Number((await db.systemStatuses.get('syncCursor'))?.value ?? 0)
   
   const request: SyncRequest = {
     operations,
@@ -29,9 +34,7 @@ async function sync() {
     }
   }
 
-  console.log(request)
-  const response = await proceedResponse(await sendRequest(request))
-
+  await proceedResponse(await sendRequest(request))
   await updateSyncStatus()
 }
 
@@ -51,6 +54,9 @@ async function proceedResponse(response: Response) {
   if (!response.ok) {
     throw new Error(`Sync failed: ${response.status}`)
   }
+
+  // TODO: Zaimplementować synchronizację zwrotną
+  // TODO: Usunąć wszystkie pola revision z baz i typów notatek
 
   return response.json()
 }
@@ -73,6 +79,7 @@ export function useSync() {
   return {
     syncStatus: readonly(syncStatus),
     sync,
-    initializeSync
+    initializeSync,
+    updateSyncStatus
   }
 }

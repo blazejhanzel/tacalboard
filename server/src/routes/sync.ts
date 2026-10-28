@@ -2,99 +2,137 @@ import type { FastifyPluginAsync } from "fastify"
 import { db } from "@/database/database.js"
 import type { Note, SyncOperation, SyncRequest } from '@tacalboard/shared'
 
-let notesById = new Map<string, Note>
-
 const syncRoutes: FastifyPluginAsync = async (app) => {
   app.post<{ Body: SyncRequest }>("/", async (request) => {
-    // TODO: Mam już wysyłanie requesta, teraz trzeba go przetworzyć gdy serwer go dostanie
     db.exec('BEGIN TRANSACTION')
 
-    notesById = new Map<string, Note>(
-      request.body.notes.map(note => [note.id, note])
-    )
-
     try {
+      const response = proceedOutgoingOperations(request.body)
+
       if (request.body.operations) {
-        for (const operation of request.body.operations) {
-          if (operation.operation === 'delete') {
-            registerDeleteOperation(operation)
-          }
-          else {
-            proceedCreateUpdateOperation(operation)
-          }
-        }
+        proceedIncomingOperations(request.body)
       }
 
-      if (request.body.cursor) { // Partial sync
-        
-      } else { // Full sync
+      const lastChange = db.prepare(`
+        SELECT MAX(id) AS cursor
+        FROM changes
+      `).get() as { cursor: number | null } | undefined
 
-      }
-
+      // SyncCursor need to be updated after proceedIncomingOperations to much new operation table
+      response.syncCursor = lastChange?.cursor ?? 0
       db.exec('COMMIT')
+      
+      return response
     }
     catch (error) {
       db.exec('ROLLBACK')
       throw error
     }
-
-    const notes = db
-      .prepare('SELECT id, content, created_at, modified_at FROM notes')
-      .all()
-
-    const cursor = db
-      .prepare('SELECT MAX(sequence) AS cursor FROM changes')
-      .get() as { cursor: number | null }
-
-    return {
-      notes,
-      cursor
-    }
   })
 }
 
-function proceedCreateUpdateOperation(operation: SyncOperation) {
-  if (operation.entityType === 'note') {
-    const note = notesById.get(operation.entityId)
+function proceedIncomingOperations(request: SyncRequest) {
+  const notesById = new Map<string, Note>(
+    request.notes.map(note => [note.id, note])
+  )
 
-    if (!note) return
-
-    const existing = db.prepare(`
-      SELECT id, content, created_at, modified_at, revision
-      FROM notes
-      WHERE id = ?
-    `).get(note.id) as Note | undefined
-
-    if (existing) {
-      if (operation.baseRevision === existing.revision) { // no conflict
-        registerUpdatedNote(existing, note)
+  for (const operation of request.operations!) {
+    const entity = (() => {
+      if (operation.entityType === 'note') {
+        return notesById.get(operation.entityId)
       }
-      else { // conflict
+    })()
 
-      }
+    if (!entity) {
+      console.log("Unrecognized type of entity: ", typeof(entity), " with id: ", operation.entityId)
+      continue
+    }
+
+    if (operation.operation === 'create') {
+      registerCreateUpdateOperation(operation, entity)
     }
     else {
-      registerCreatedNote(note)
+      const newerChange = (
+        db.prepare(`
+          SELECT id
+          FROM changes
+          WHERE entity_type = ?
+            AND entity_id = ?
+            AND id > ?
+          LIMIT 1
+        `).get(
+          operation.entityType,
+          operation.entityId,
+          request.syncCursor
+        )
+      )
+
+      if (operation.operation === 'delete') {
+        if (!newerChange) {
+          registerDeleteOperation(operation)
+        }
+      }
+      else {
+        if (newerChange) {
+          // If server has newest version, convert update operation to create operation
+          const newId = crypto.randomUUID()
+          operation.entityId = newId
+          entity.id = newId
+        }
+
+        registerCreateUpdateOperation(operation, entity)
+      }
     }
   }
 }
 
-function registerCreatedNote(note: Note) {
-  db.prepare(`
-    INSERT INTO notes (
+function proceedOutgoingOperations(request: SyncRequest): SyncRequest {
+  const changes = db.prepare(`
+    SELECT
       id,
-      content,
-      created_at,
-      modified_at,
-      revision
-    ) VALUES (?, ?, ?, ?, ?)
-  `).run(
-    note.id,
-    note.content,
-    note.createdAt.toISOString(),
-    note.modifiedAt.toISOString(),
-    note.revision
-  )
+      operation,
+      entity_type AS entityType,
+      entity_id AS entityId
+    FROM changes
+    WHERE id > ?
+  `).all(request.syncCursor) as unknown as SyncOperation[]
+
+  const response: SyncRequest = {
+    operations: [],
+    notes: [],
+    syncCursor: 0
+  }
+
+  for (const change of changes) {
+    response.operations?.push(change)
+
+    if (change.entityType === "note") {
+      response.notes.push(
+        db.prepare(`
+          SELECT
+            id,
+            content,
+            created_at AS createdAt,
+            modified_at AS modifiedAt
+          FROM notes
+          WHERE id = ?
+        `).get(change.entityId) as unknown as Note
+      )
+    }
+  }
+
+  return response
+}
+
+function registerCreateUpdateOperation(operation: SyncOperation, entity: Note) {
+  if (operation.entityType === "note") {
+    if (operation.operation === "create") {
+      createNote(entity as Note)
+    }
+    else if (operation.operation === "update") {
+      updateNote(entity as Note)
+    }
+  }
 
   db.prepare(`
     INSERT INTO changes (
@@ -103,47 +141,20 @@ function registerCreatedNote(note: Note) {
       entity_id
     ) VALUES (?, ?, ?)
   `).run(
-    'create',
-    'note',
-    note.id
-  )
-}
-
-function registerUpdatedNote(existing: Note, updated: Note) {
-  const newRevision = existing.revision + 1
-
-  db.prepare(`
-    UPDATE notes
-    SET
-      content = ?,
-      modified_at = ?,
-      revision = ?
-    WHERE id = ?
-  `).run(
-    updated.content,
-    updated.modifiedAt.toISOString(),
-    newRevision,
-    updated.id
-  )
-
-  db.prepare(`
-    INSERT INTO changes (
-      entity_type,
-      entity_id,
-      operation
-    ) VALUES (?, ?, ?)
-  `).run(
-    'note',
-    updated.id,
-    'update'
+    operation.operation,
+    operation.entityType,
+    operation.entityId
   )
 }
 
 function registerDeleteOperation(operation: SyncOperation) {
   const result = db.prepare(`
-    DELETE FROM notes
+    DELETE FROM ?
     WHERE id = ?
-  `).run(operation.entityId)
+  `).run(
+    operation.entityType + "s",
+    operation.entityId
+  )
 
   if (result.changes > 0) {
     db.prepare(`
@@ -158,6 +169,38 @@ function registerDeleteOperation(operation: SyncOperation) {
       operation.entityId
     )
   }
+}
+
+function createNote(note: Note) {
+  db.prepare(`
+    INSERT INTO notes (
+      id,
+      content,
+      created_at,
+      modified_at,
+      revision
+    ) VALUES (?, ?, ?, ?, ?)
+  `).run(
+    note.id,
+    note.content,
+    new Date(note.createdAt).toISOString(),
+    new Date(note.modifiedAt).toISOString(),
+    note.revision
+  )
+}
+
+function updateNote(note: Note) {
+  db.prepare(`
+    UPDATE notes
+    SET
+      content = ?,
+      modified_at = ?
+    WHERE id = ?
+  `).run(
+    note.content,
+    new Date(note.modifiedAt).toISOString(),
+    note.id
+  )
 }
 
 export default syncRoutes
