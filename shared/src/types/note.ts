@@ -5,5 +5,5 @@ export interface Note {
   content: string
   createdAt: Date
   modifiedAt: Date
-  revision: number
+  revision: number // NOTE: used?
 }

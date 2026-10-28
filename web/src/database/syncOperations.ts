@@ -1,4 +1,5 @@
 import { db } from './database'
+import { useSync } from '@/composables/useSync'
 
 import type { Operation, EntityType } from '@tacalboard/shared'
 
@@ -26,6 +27,8 @@ export async function registerOperation(operation: Operation, entityType: Entity
     entityId,
     baseRevision
   })
+
+  useSync().updateSyncStatus()
 }
 
 async function getRevisionOfEntity(entityType: EntityType, entityId: string) {
