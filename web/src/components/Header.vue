@@ -11,7 +11,7 @@ import IconOpenMenu from '@/components/icons/IconOpenMenu.vue'
 import { useSync } from '@/composables/useSync'
 
 const appVersion = __APP_VERSION__
-const developmentRun = import.meta.env.DEV
+const developmentRun = true //TODO: import.meta.env.DEV
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
