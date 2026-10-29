@@ -7,21 +7,25 @@ const syncRoutes: FastifyPluginAsync = async (app) => {
     db.exec('BEGIN TRANSACTION')
 
     try {
-      // Outgoing operations are proceed first, to not proceed incoming operations as outgoing
-      const response = proceedOutgoingOperations(request.body) // TODO: Brakuje w zwracanym response informacji o utworzonych notatkach jeśli wystąpił konflikt
+      const lastChangeBeforeIncomingOperations = (db.prepare(`
+        SELECT MAX(id) AS cursor
+        FROM changes
+      `).get() as { cursor: number | null } | undefined)?.cursor ?? 0
 
       // Incoming operations are proceed only if request contains anything in operations array
       if (request.body.operations) {
         proceedIncomingOperations(request.body)
       }
 
-      const lastChange = db.prepare(`
+      const response = proceedOutgoingOperations(request.body, lastChangeBeforeIncomingOperations)
+
+      const lastChange = (db.prepare(`
         SELECT MAX(id) AS cursor
         FROM changes
-      `).get() as { cursor: number | null } | undefined
+      `).get() as { cursor: number | null } | undefined)?.cursor ?? 0
 
       // SyncCursor need to be updated after proceedIncomingOperations to match new operation table
-      response.syncCursor = lastChange?.cursor ?? 0
+      response.syncCursor = lastChange
       db.exec('COMMIT')
       
       return response
@@ -68,7 +72,7 @@ function proceedIncomingOperations(request: SyncRequest) {
   }
 }
 
-function proceedOutgoingOperations(request: SyncRequest): SyncRequest {
+function proceedOutgoingOperations(request: SyncRequest, lastChange: number): SyncRequest {
   const changes = db.prepare(`
     SELECT
       id,
@@ -76,8 +80,14 @@ function proceedOutgoingOperations(request: SyncRequest): SyncRequest {
       entity_type AS entityType,
       entity_id AS entityId
     FROM changes
-    WHERE id > ?
-  `).all(request.syncCursor) as unknown as SyncOperation[]
+    WHERE
+      (id > ? AND id <= ?)
+      OR (id > ? AND operation = 'create')
+  `).all(
+    request.syncCursor,
+    lastChange,
+    lastChange
+  ) as unknown as SyncOperation[]
 
   const response: SyncRequest = {
     operations: [],

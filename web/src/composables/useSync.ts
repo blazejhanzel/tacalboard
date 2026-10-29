@@ -106,10 +106,10 @@ async function proceedIncomingOperations(request: SyncRequest) {
 
     if (operation.operation === 'delete') {
       if (await hasNewerChanges(operation)) {
-        registerEntityAsNewlyCreated(operation.entityType, operation.entityId, crypto.randomUUID())
+        await registerEntityAsNewlyCreated(operation.entityType, operation.entityId, crypto.randomUUID())
       }
       else {
-        registerDeleteOperation(operation)
+        await registerDeleteOperation(operation)
       }
     }
     else {
@@ -126,7 +126,7 @@ async function proceedIncomingOperations(request: SyncRequest) {
       }
   
       // operation.operation === 'create' || operation.operation === 'update'
-      registerCreateUpdateOperation(operation.entityType, entity)
+      await registerCreateUpdateOperation(operation.entityType, entity)
     }
   }
 }
