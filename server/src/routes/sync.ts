@@ -8,7 +8,7 @@ const syncRoutes: FastifyPluginAsync = async (app) => {
 
     try {
       // Outgoing operations are proceed first, to not proceed incoming operations as outgoing
-      const response = proceedOutgoingOperations(request.body)
+      const response = proceedOutgoingOperations(request.body) // TODO: Brakuje w zwracanym response informacji o utworzonych notatkach jeśli wystąpił konflikt
 
       // Incoming operations are proceed only if request contains anything in operations array
       if (request.body.operations) {
@@ -43,11 +43,6 @@ function proceedIncomingOperations(request: SyncRequest) {
         return notesById.get(operation.entityId)
       }
     })()
-
-    if (!entity) {
-      console.log("Unrecognized type of entity: ", typeof(entity), " with id: ", operation.entityId)
-      continue
-    }
       
     if (operation.operation === 'delete') {
       if (!hasNewerChanges(request, operation)) {
@@ -55,6 +50,10 @@ function proceedIncomingOperations(request: SyncRequest) {
       }
     }
     else {
+      if (!entity) {
+        continue
+      }
+
       if (operation.operation === 'update' && hasNewerChanges(request, operation)) {
         // If server has newest version, convert update operation to create operation
         const newId = crypto.randomUUID()
@@ -88,6 +87,10 @@ function proceedOutgoingOperations(request: SyncRequest): SyncRequest {
 
   for (const change of changes) {
     response.operations?.push(change)
+
+    if (change.operation === 'delete') {
+      continue
+    }
 
     if (change.entityType === "note") {
       response.notes.push(
@@ -148,11 +151,12 @@ function registerCreateUpdateOperation(operation: SyncOperation, entity: Note) {
 }
 
 function registerDeleteOperation(operation: SyncOperation) {
+  const tableName = `${operation.entityType}s`
+
   const result = db.prepare(`
-    DELETE FROM ?
+    DELETE FROM ${tableName}
     WHERE id = ?
   `).run(
-    operation.entityType + "s",
     operation.entityId
   )
 
