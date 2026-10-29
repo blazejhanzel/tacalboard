@@ -7,8 +7,10 @@ const syncRoutes: FastifyPluginAsync = async (app) => {
     db.exec('BEGIN TRANSACTION')
 
     try {
+      // Outgoing operations are proceed first, to not proceed incoming operations as outgoing
       const response = proceedOutgoingOperations(request.body)
 
+      // Incoming operations are proceed only if request contains anything in operations array
       if (request.body.operations) {
         proceedIncomingOperations(request.body)
       }
@@ -18,13 +20,14 @@ const syncRoutes: FastifyPluginAsync = async (app) => {
         FROM changes
       `).get() as { cursor: number | null } | undefined
 
-      // SyncCursor need to be updated after proceedIncomingOperations to much new operation table
+      // SyncCursor need to be updated after proceedIncomingOperations to match new operation table
       response.syncCursor = lastChange?.cursor ?? 0
       db.exec('COMMIT')
       
       return response
     }
     catch (error) {
+      // On any error, nothing is saved to database and nothing is returned to client
       db.exec('ROLLBACK')
       throw error
     }
@@ -32,9 +35,7 @@ const syncRoutes: FastifyPluginAsync = async (app) => {
 }
 
 function proceedIncomingOperations(request: SyncRequest) {
-  const notesById = new Map<string, Note>(
-    request.notes.map(note => [note.id, note])
-  )
+  const notesById = new Map<string, Note>(request.notes.map(note => [note.id, note]))
 
   for (const operation of request.operations!) {
     const entity = (() => {
@@ -47,41 +48,23 @@ function proceedIncomingOperations(request: SyncRequest) {
       console.log("Unrecognized type of entity: ", typeof(entity), " with id: ", operation.entityId)
       continue
     }
-
-    if (operation.operation === 'create') {
-      registerCreateUpdateOperation(operation, entity)
+      
+    if (operation.operation === 'delete') {
+      if (!hasNewerChanges(request, operation)) {
+        registerDeleteOperation(operation)
+      }
     }
     else {
-      const newerChange = (
-        db.prepare(`
-          SELECT id
-          FROM changes
-          WHERE entity_type = ?
-            AND entity_id = ?
-            AND id > ?
-          LIMIT 1
-        `).get(
-          operation.entityType,
-          operation.entityId,
-          request.syncCursor
-        )
-      )
-
-      if (operation.operation === 'delete') {
-        if (!newerChange) {
-          registerDeleteOperation(operation)
-        }
+      if (operation.operation === 'update' && hasNewerChanges(request, operation)) {
+        // If server has newest version, convert update operation to create operation
+        const newId = crypto.randomUUID()
+        operation.operation = 'create'
+        operation.entityId = newId
+        entity.id = newId
       }
-      else {
-        if (newerChange) {
-          // If server has newest version, convert update operation to create operation
-          const newId = crypto.randomUUID()
-          operation.entityId = newId
-          entity.id = newId
-        }
-
-        registerCreateUpdateOperation(operation, entity)
-      }
+  
+      // operation.operation === 'create' || operation.operation === 'update'
+      registerCreateUpdateOperation(operation, entity)
     }
   }
 }
@@ -122,6 +105,23 @@ function proceedOutgoingOperations(request: SyncRequest): SyncRequest {
   }
 
   return response
+}
+
+function hasNewerChanges(request: SyncRequest, operation: SyncOperation): boolean {
+  const newerChange = db.prepare(`
+    SELECT id
+    FROM changes
+    WHERE entity_type = ?
+      AND entity_id = ?
+      AND id > ?
+    LIMIT 1
+  `).get(
+    operation.entityType,
+    operation.entityId,
+    request.syncCursor
+  )
+
+  return newerChange !== undefined
 }
 
 function registerCreateUpdateOperation(operation: SyncOperation, entity: Note) {
