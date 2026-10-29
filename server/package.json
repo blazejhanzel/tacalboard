@@ -1,7 +1,7 @@
 {
   "name": "@tacalboard/server",
   "description": "Server for self-hosted personal organizer with notes, tasks and calendar.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

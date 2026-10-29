@@ -18,7 +18,7 @@ await app.register(swagger, {
     info: {
       title: "Tacalboard API",
       description: "API for Tacalboard",
-      version: "0.1.0"
+      version: "0.1.1"
     }
   }
 })
