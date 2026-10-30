@@ -5,8 +5,18 @@ import fastifyStatic from "@fastify/static"
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox"
 import { join } from "node:path"
 import QRCode from "qrcode"
-
+import { readFileSync } from 'node:fs'
 import syncRoutes from "@/routes/sync.js"
+
+// Version info
+const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf-8'))
+const version = packageJson.version
+const channel = process.env.BUILD_CHANNEL ?? 'dev'
+const buildNumber = process.env.BUILD_NUMBER
+const gitSha = process.env.GIT_SHA?.slice(0, 7)
+export const __APP_VERSION__ = buildNumber && gitSha
+  ? `${version}-${channel}.${buildNumber}+g${gitSha}`
+  : `${version}-${channel}+g${gitSha ?? 'local'}`
 
 const app = Fastify({
   logger: true
@@ -18,7 +28,7 @@ await app.register(swagger, {
     info: {
       title: "Tacalboard API",
       description: "API for Tacalboard",
-      version: "0.1.1"
+      version: version
     }
   }
 })
