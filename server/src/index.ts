@@ -9,14 +9,14 @@ import { readFileSync } from 'node:fs'
 import syncRoutes from "@/routes/sync.js"
 
 // Version info
-const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf-8'))
+const packageJson = JSON.parse(readFileSync('../package.json', 'utf-8'))
 const version = packageJson.version
 const channel = process.env.BUILD_CHANNEL ?? 'dev'
 const buildNumber = process.env.BUILD_NUMBER
 const gitSha = process.env.GIT_SHA?.slice(0, 7)
-export const __APP_VERSION__ = buildNumber && gitSha
-  ? `${version}-${channel}.${buildNumber}+g${gitSha}`
-  : `${version}-${channel}+g${gitSha ?? 'local'}`
+const __APP_VERSION__ = buildNumber && gitSha
+  ? `${version}-${channel}.${buildNumber}+${'g' + gitSha}`
+  : `${version}-${channel}+${gitSha ? 'g' + gitSha : 'local'}`
 
 const app = Fastify({
   logger: true
@@ -28,7 +28,7 @@ await app.register(swagger, {
     info: {
       title: "Tacalboard API",
       description: "API for Tacalboard",
-      version: version
+      version: __APP_VERSION__
     }
   }
 })
