@@ -1,4 +1,4 @@
-export * from './types/entity.js'
+export * from './types/keyValuePair.js'
 export * from './types/keyValuePair.js'
 export * from './types/note.js'
 export * from './types/syncOperation.js'

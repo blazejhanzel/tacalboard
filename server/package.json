@@ -1,7 +1,6 @@
 {
   "name": "@tacalboard/server",
-  "description": "Server for self-hosted personal organizer with notes, tasks and calendar.",
-  "version": "0.1.1",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -26,8 +25,5 @@
     "@types/qrcode": "^1.5.6",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3"
-  },
-  "allowScripts": {
-    "esbuild@0.28.2": true
   }
 }
