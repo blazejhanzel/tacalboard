@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: "Adwaita Sans";
-  src: url("./fonts/AdwaitaSans-Regular.ttf") format("truetype");
+  src: url("/fonts/AdwaitaSans-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 1000;
   font-display: swap;
@@ -11,7 +11,7 @@
 
 @font-face {
   font-family: "Adwaita Sans";
-  src: url("./fonts/AdwaitaSans-Italic.ttf") format("truetype");
+  src: url("/fonts/AdwaitaSans-Italic.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
   font-display: swap;

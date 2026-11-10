@@ -1,7 +1,7 @@
 {
     "name": "tacalboard",
     "description": "Minimalistic todo, notes and calendar app",
-    "version": "0.2.0",
+    "version": "0.1.2",
     "private": true,
     "workspaces": [
         "web",
