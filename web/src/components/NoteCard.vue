@@ -62,6 +62,21 @@ const dateFormatted = (() => {
 
     return `${t('dates.today')}, ${time}`
   }
+  else {
+    const isYesterday =
+      props.date.getFullYear() === now.getFullYear() &&
+      props.date.getMonth() === now.getMonth() &&
+      props.date.getDate() === now.getDate() - 1
+
+    if (isYesterday) {
+      const time = new Intl.DateTimeFormat(
+        settings.locale,
+        dateFormats.today
+      ).format(props.date)
+  
+      return `${t('dates.yesterday')}, ${time}`
+    }
+  }
 
   const diff = now.getTime() - props.date.getTime()
   const sevenDays = 7 * 24 * 60 * 60 * 1000
