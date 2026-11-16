@@ -13,6 +13,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/backup-and-restore',
+      name: 'backup-and-restore',
+      component: () => import('@/views/BackupAndRestoreView.vue'),
+      meta: {
+        title: 'header.backupAndRestoreView',
+        navigationBack: true,
+        showSyncStatus: false,
+        showAppMenu: false
+      },
+    },
+    {
       path: '/note/:id/edit',
       name: 'note-edit',
       component: () => import('@/views/NoteEditView.vue'),
@@ -37,6 +48,7 @@ const router = createRouter({
       meta: {
         title: 'header.settingsView',
         navigationBack: true,
+        showSyncStatus: false,
         showAppMenu: false,
       },
     },

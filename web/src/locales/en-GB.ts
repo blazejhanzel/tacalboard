@@ -1,5 +1,6 @@
 export default {
   app: {
+    backupAndRestore: 'Backup and Restore',
     settings: 'Settings',
     theme: 'Theme',
     themes: {
@@ -8,22 +9,39 @@ export default {
       dark: 'Dark',
     }
   },
+  backupAndRestore: {
+    backupButton: 'Download backup file',
+    backupHeader: 'Backup to file',
+    backupHint: `Gives ability to download currently used database to the file, so it can be restored if necessery. In case of using app in serveless mode, it's recommended to create backup every time after creating or editing big amount of data.`,
+    restoreHeader: 'Restore from file',
+    restoreHint: 'Provides ability to import database from the .json file to the application.',
+    importHint: 'Select file to the import and click the button to import database to the application.',
+    importTypes: {
+      replace: 'Replace existing database',
+      append: 'Append to existing database'
+    }
+  },
   common: {
     cancel: 'Cancel',
-    save: 'Save',
     delete: 'Delete',
-    edit: 'Edit'
+    edit: 'Edit',
+    export: 'Export',
+    import: 'Import',
+    save: 'Save',
+    selectFile: 'Select file...',
   },
   dates: {
-    today: 'Today'
+    today: 'Today',
+    yesterday: 'Yesterday'
   },
   header: {
+    backupAndRestoreView: 'Backup and Restore',
     noteEditView: 'Note edit', // TODO: Check note editing?
     settingsView: 'Settings',
   },
   navbar: {
     dump: 'Dump',
-    notepad: 'Notepad'
+    notepad: 'Notepad',
   },
   notes: {
     composerPlaceholder: 'Capture a thought...',

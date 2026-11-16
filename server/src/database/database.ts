@@ -20,6 +20,7 @@ db.exec(`
   )
 `);
 
+// TODO: Change table to "sync_operations" to be the same as in frontend
 db.exec(`
   CREATE TABLE IF NOT EXISTS changes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

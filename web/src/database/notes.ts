@@ -1,6 +1,7 @@
 import { liveQuery } from 'dexie'
 import { db } from './database'
 import { registerOperation } from './syncOperations'
+import type { Note } from '@tacalboard/shared'
 
 export function observeNotes() {
   return liveQuery(() =>
@@ -51,4 +52,12 @@ export async function updateNote(id: string, content: string) {
 export async function deleteNote(id: string) {
   await db.notes.delete(id)
   await registerOperation('delete', 'note', id)
+}
+
+export function normalizeNote(note: Note): Note {
+  return {
+    ...note,
+    createdAt: new Date(note.createdAt),
+    modifiedAt: new Date(note.modifiedAt)
+  }
 }

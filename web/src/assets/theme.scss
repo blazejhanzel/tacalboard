@@ -32,6 +32,15 @@ body {
   --bs-body-font-family: "Adwaita Sans", sans-serif;
 }
 
+button {
+  display: flex;
+  font-weight: bold;
+}
+
+button svg * {
+  fill: var(--adw-headerbar-fg-color);
+}
+
 /* Bootstrap overrides */
 
 :root {
@@ -44,19 +53,17 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: var(--adw-border-radius-sm);
-  padding: 8px;
+  padding: 0.5rem;
 }
 
-.btn:hover, .dropdown-item:hover {
+.btn:hover, .dropdown-item:hover, .list-group-item:hover {
   background-color: var(--tcb-overlay-hover);
 }
 
-.btn:active, .btn:first-child:active, .btn:focus-visible, .dropdown-item:active, .dropdown-item:focus, .dropdown-item:focus-visible {
+.btn:active, .btn:first-child:active, .btn:focus-visible,
+.dropdown-item:active, .dropdown-item:focus, .dropdown-item:focus-visible,
+.list-group-item:active, .list-group-item:focus, .list-group-item:focus-visible {
   background-color: var(--tcb-overlay-active) !important;
-}
-
-.btn svg * {
-  fill: var(--adw-headerbar-fg-color);
 }
 
 .card {
@@ -80,7 +87,7 @@ body {
   color: var(--adw-popover-fg-color);
   border: 0;
   border-radius: var(--adw-border-radius) !important;
-  padding: 4px;
+  padding: 0.25rem;
   box-shadow:
     0 0.5rem 1rem var(--adw-popover-shade-color),
     0 -0.25rem 0.5rem var(--adw-popover-shade-color);
@@ -96,6 +103,20 @@ body {
     }
 }
 
+.list-group {
+  background-color: var(--adw-card-bg-color);
+  color: var(--adw-card-fg-color);
+  margin: 1rem 0rem 1rem 0rem;
+  border: 0;
+  border-radius: var(--adw-border-radius) !important;
+  box-shadow:
+    0 0.125rem 0.25rem var(--adw-card-shade-color);
+  
+  .list-group-item {
+    padding: 1rem;
+  }
+}
+
 /* Custom classes */
 
 [data-custom-theme="light"] {
@@ -107,15 +128,15 @@ body {
 }
 
 :root {
-  --tcb-overlay-raised: color-mix(in srgb, transparent, var(--tcb-overlay-color) 4%);
-  --tcb-overlay-hover: color-mix(in srgb, transparent, var(--tcb-overlay-color) 8%);
-  --tcb-overlay-active: color-mix(in srgb, transparent, var(--tcb-overlay-color) 16%);
+  --tcb-overlay-raised: color-mix(in srgb, transparent, var(--tcb-overlay-color) 2%);
+  --tcb-overlay-hover: color-mix(in srgb, transparent, var(--tcb-overlay-color) 4%);
+  --tcb-overlay-active: color-mix(in srgb, transparent, var(--tcb-overlay-color) 8%);
 }
 
 .adw-btn-dialog {
   border-radius: var(--adw-border-radius);
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
   font-weight: bolder !important;
 }
 
@@ -124,7 +145,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 999px !important;
-  padding: 8px;
+  padding: 0.5rem;
 }
 
 .adw-btn-raised {

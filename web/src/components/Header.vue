@@ -24,6 +24,7 @@ const props = defineProps<{
 const title = computed(() => route.meta.title ? t(route.meta.title as string) : 'Tacalboard')
 const hasSidebar = computed(() => route.meta.sidebar ?? false)
 const showBackButton = computed(() => route.meta.navigationBack ?? false)
+const showSyncStatus = computed(() => route.meta.showSyncStatus ?? true)
 const showAppMenu = computed(() => route.meta.showAppMenu ?? true)
 
 function goBack() {
@@ -35,7 +36,7 @@ function goBack() {
   <header class="navbar navbar-expand-lg p-2" :class="{ 'is-scrolled': isScrolled }" id="header">
     <div class="container-fluid p-0">
       <div class="row w-100 m-0 align-items-center">
-        <div class="col-4 p-0 d-flex gap-2">
+        <div class="col-2 p-0 d-flex gap-2">
           <button v-if="hasSidebar" class="btn">
             <IconDockLeft />
           </button>
@@ -43,11 +44,11 @@ function goBack() {
             <IconGoPrevious />
           </button>
         </div>
-        <div class="col-4 p-0 text-center">
+        <div class="col-8 p-0 text-center">
           <a class="navbar-brand me-auto">{{ title }}</a>
         </div>
-        <div class="col-4 p-0 d-flex gap-2 justify-content-end">
-          <button class="btn" :disabled="!developmentRun" @click="sync.sync">
+        <div class="col-2 p-0 d-flex gap-2 justify-content-end">
+          <button v-if="showSyncStatus" class="btn" :disabled="!developmentRun" @click="sync.sync">
             <IconCloudFilled v-if="sync.syncStatus.value === 'synced'" />
             <IconUpdate v-else-if="sync.syncStatus.value === 'syncing'"/>
             <IconCloudDisabled v-else-if="sync.syncStatus.value === 'not-synced'"/>
@@ -62,6 +63,11 @@ function goBack() {
               <IconOpenMenu />
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <RouterLink :to="'/backup-and-restore'" class="dropdown-item w-100" type="button" aria-expanded="false">
+                  <span>{{  t('app.backupAndRestore') }}</span>
+                </RouterLink>
+              </li>
               <li>
                 <RouterLink :to="'/settings'" class="dropdown-item w-100" type="button" aria-expanded="false">
                   <span>{{ t('app.settings') }}</span>
