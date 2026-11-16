@@ -68,39 +68,41 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="card" :class="{ editing: isWritingDumpNote }" id="dump-composer">
-    <div class="card-body p-0 d-flex">
-      <textarea
-        v-model="newNote"
-        class="form-control p-3 border-0 shadow-none w-100 align-self-center"
-        id="dump-textarea"
-        ref="dumpTextarea"
-        rows="1"
-        @input="autoResize"
-        @keydown.ctrl.enter.prevent="addNote"
-        @focus="isWritingDumpNote = true"
-        @blur="handleBlur"
-        :placeholder="t('notes.composerPlaceholder')">
-      </textarea>
-      <div class="flex-shrink-1 align-self-center p-3">
-        <button class="btn adw-btn-circular adw-btn-suggested-action" @mousedown="isClickingSendButton = true" @click="addNote">
-          <IconPaperPlane />
-        </button>
+  <div class="container" :class="{ 'h-100': notes.length === 0}">
+    <div class="card" :class="{ editing: isWritingDumpNote }" id="dump-composer">
+      <div class="card-body p-0 d-flex">
+        <textarea
+          v-model="newNote"
+          class="form-control p-3 border-0 shadow-none w-100 align-self-center"
+          id="dump-textarea"
+          ref="dumpTextarea"
+          rows="1"
+          @input="autoResize"
+          @keydown.ctrl.enter.prevent="addNote"
+          @focus="isWritingDumpNote = true"
+          @blur="handleBlur"
+          :placeholder="t('notes.composerPlaceholder')">
+        </textarea>
+        <div class="flex-shrink-1 align-self-center p-3">
+          <button class="btn adw-btn-circular adw-btn-suggested-action" @mousedown="isClickingSendButton = true" @click="addNote">
+            <IconPaperPlane />
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-  <div v-if="notes.length > 0" class="d-grid gap-3 mt-3 pt-3 pb-3">
-    <NoteCard
-      v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
-      :key="note.id"
-      :id="note.id"
-      :content="note.content"
-      :date="note.modifiedAt"
-    />
-  </div>
-  <div v-else id="empty-placeholder" class="d-flex align-items-center gap-3 pt-3 pb-3 text-center">
-    <div class="m-auto">
-      {{t('notes.emptyPlaceholder')}}
+    <div v-if="notes.length > 0" class="d-grid gap-3 mt-3 pt-3 pb-3">
+      <NoteCard
+        v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
+        :key="note.id"
+        :id="note.id"
+        :content="note.content"
+        :date="note.modifiedAt"
+      />
+    </div>
+    <div v-else id="empty-placeholder" class="d-flex align-items-center gap-3 pt-3 pb-3 text-center">
+      <div class="m-auto">
+        {{t('notes.emptyPlaceholder')}}
+      </div>
     </div>
   </div>
 </template>

@@ -57,9 +57,7 @@ onUnmounted(() => {
     <Header :is-scrolled="isScrolled" />
   
     <main ref="scrollContainer" class="container-fluid" id="app-body">
-      <div class="container h-100">
-        <RouterView />
-      </div>
+      <RouterView />
     </main>
 
     <component :is="bottomBarComponent" v-if="showBottomBar" />

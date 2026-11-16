@@ -1,3 +1,5 @@
 <template>
-  Settings
+  <div class="container">
+    Settings
+  </div>
 </template>

@@ -2,5 +2,7 @@
 </script>
 
 <template>
-  Notes
+  <div class="container">
+    Notes
+  </div>
 </template>
