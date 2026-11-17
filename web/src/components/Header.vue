@@ -4,10 +4,11 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import IconCloudDisabled from '@/components/icons/IconCloudDisabled.vue'
 import IconCloudFilled from '@/components/icons/IconCloudFilled.vue'
-import IconUpdate from '@/components/icons/IconUpdate.vue'
 import IconDockLeft from '@/components/icons/IconDockLeft.vue'
+import IconErrorOutline from './icons/IconErrorOutline.vue'
 import IconGoPrevious from '@/components/icons/IconGoPrevious.vue'
 import IconOpenMenu from '@/components/icons/IconOpenMenu.vue'
+import IconUpdate from '@/components/icons/IconUpdate.vue'
 import { useSync } from '@/composables/useSync'
 
 const appVersion = __APP_VERSION__
@@ -50,8 +51,9 @@ function goBack() {
         <div class="col-2 p-0 d-flex gap-2 justify-content-end">
           <button v-if="showSyncStatus" class="btn" :disabled="!developmentRun" @click="sync.sync">
             <IconCloudFilled v-if="sync.syncStatus.value === 'synced'" />
-            <IconUpdate v-else-if="sync.syncStatus.value === 'syncing'"/>
-            <IconCloudDisabled v-else-if="sync.syncStatus.value === 'not-synced'"/>
+            <IconUpdate v-else-if="sync.syncStatus.value === 'syncing'" />
+            <IconCloudDisabled v-else-if="sync.syncStatus.value === 'not-synced'" />
+            <IconErrorOutline v-else-if="sync.syncStatus.value === 'sync-failed'" />
           </button>
           <div v-if="showAppMenu" class="dropdown-center">
             <button

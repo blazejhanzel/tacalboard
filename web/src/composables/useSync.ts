@@ -14,8 +14,9 @@ async function sync() {
 
   syncStatus.value = 'syncing'
 
+  try {
+
   const request = await prepareRequest()
-  console.log(request) // TODO: Temporary for testing
   const response = await sendRequest(request)
 
   if (!response.ok) {
@@ -26,7 +27,11 @@ async function sync() {
   await db.syncOperations.bulkDelete(request.operations?.map(op => op.id!) ?? [])
   await proceedResponse(response)
 
-  await updateSyncStatus()
+    await updateSyncStatus() // TODO: Zmienić nazwę albo ogólnie sposób podliczania tego na realtime, ta funkcja jest źle opisana
+  } catch (error) {
+    syncStatus.value = 'sync-failed'
+    throw error
+  }
 }
 
 async function prepareRequest(): Promise<SyncRequest> {
