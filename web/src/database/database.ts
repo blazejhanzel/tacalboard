@@ -17,12 +17,14 @@ db.version(1).stores({
 })
 
 // Changed systemStatuses to appStates (changed naming convention)
-db.version(2).stores({
-  appStates: 'key',
-  notes: 'id, createdAt, modifiedAt',
-  syncOperations: '++id, [entityType+entityId]',
-  systemStatuses: null,
-}).upgrade(async tx => {
-  const oldData = await tx.table('systemStatuses').toArray();
-  await tx.table('appStates').bulkPut(oldData);
-});
+db.version(2)
+  .stores({
+    appStates: 'key',
+    notes: 'id, createdAt, modifiedAt',
+    syncOperations: '++id, [entityType+entityId]',
+    systemStatuses: null,
+  })
+  .upgrade(async (tx) => {
+    const oldData = await tx.table('systemStatuses').toArray()
+    await tx.table('appStates').bulkPut(oldData)
+  })

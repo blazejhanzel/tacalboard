@@ -1,15 +1,15 @@
-import { FastifyPluginAsync } from "fastify"
-import { getDatabaseVersion } from "@/database/index.js"
+import { FastifyPluginAsync } from "fastify";
+import { getDatabaseVersion } from "@/database/index.js";
 
 const statusRoutes: FastifyPluginAsync = async (app) => {
   app.get("/", async () => {
     return {
-      status: 'ok',
+      status: "ok",
       database: {
         version: getDatabaseVersion(),
       },
-    }
-  })
-}
+    };
+  });
+};
 
-export default statusRoutes
+export default statusRoutes;

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import Header from '@/components/Header.vue'
-import Navbar from "@/components/Navbar.vue"
+import Navbar from '@/components/Navbar.vue'
 
 const route = useRoute()
 
 const isScrolled = ref(false)
 const scrollContainer = ref<HTMLElement | null>(null)
-  
+
 const bottomBarComponents = {
   navbar: Navbar,
 }
@@ -32,19 +32,13 @@ onMounted(() => {
 })
 
 onMounted(async () => {
-  const appBody = document.getElementById("app-body")!;
-  
-  document.documentElement.style.setProperty(
-    "--tcb-app-body-height",
-    `${appBody.offsetHeight}px`
-  )
+  const appBody = document.getElementById('app-body')!
+
+  document.documentElement.style.setProperty('--tcb-app-body-height', `${appBody.offsetHeight}px`)
 
   const isIOSApp = navigator.standalone === true
 
-  document.documentElement.classList.toggle(
-    'ios-app',
-    isIOSApp
-  )
+  document.documentElement.classList.toggle('ios-app', isIOSApp)
 })
 
 onUnmounted(() => {
@@ -55,7 +49,7 @@ onUnmounted(() => {
 <template>
   <div class="app">
     <Header :is-scrolled="isScrolled" />
-  
+
     <main ref="scrollContainer" class="container-fluid" id="app-body">
       <RouterView />
     </main>

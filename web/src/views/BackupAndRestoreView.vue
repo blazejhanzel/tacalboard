@@ -21,11 +21,19 @@ async function importDatabaseFile() {
 
 <template>
   <div class="container">
-    <div v-if="importStatus === 'error'" class="alert alert-warning alert-dismissible d-flex align-items-center" role="alert">
+    <div
+      v-if="importStatus === 'error'"
+      class="alert alert-warning alert-dismissible d-flex align-items-center"
+      role="alert"
+    >
       <IconWarningOutline />
       <span class="ms-2">An error occured durring import</span>
     </div>
-    <div v-else-if="importStatus === 'success'" class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+    <div
+      v-else-if="importStatus === 'success'"
+      class="alert alert-success alert-dismissible d-flex align-items-center"
+      role="alert"
+    >
       <IconCheckRoundOutline />
       <span class="ms-2">Imported succesfully completed</span>
     </div>
@@ -81,7 +89,9 @@ async function importDatabaseFile() {
           id="importedFile"
           accept=".json,application/json"
           class="visually-hidden"
-          @change="database.selectedFile.value = ($event.target as HTMLInputElement).files?.[0] ?? null"
+          @change="
+            database.selectedFile.value = ($event.target as HTMLInputElement).files?.[0] ?? null
+          "
         />
       </li>
     </ul>
@@ -91,7 +101,8 @@ async function importDatabaseFile() {
         type="button"
         id="importFileButton"
         :disabled="!database.selectedFile"
-        @click="importDatabaseFile">
+        @click="importDatabaseFile"
+      >
         {{ t('common.import') }}
       </button>
     </ul>

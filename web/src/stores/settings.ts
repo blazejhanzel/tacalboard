@@ -6,5 +6,5 @@ export const useSettingsStore = defineStore('settings', {
     theme: 'system' as 'system' | 'light' | 'dark',
   }),
 
-  persist: true
+  persist: true,
 })

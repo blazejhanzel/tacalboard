@@ -1,17 +1,17 @@
-@import "bootstrap/scss/bootstrap";
-@import "adwaita.css";
+@import 'bootstrap/scss/bootstrap';
+@import 'adwaita.css';
 
 @font-face {
-  font-family: "Adwaita Sans";
-  src: url("/fonts/AdwaitaSans-Regular.woff2") format("woff2");
+  font-family: 'Adwaita Sans';
+  src: url('/fonts/AdwaitaSans-Regular.woff2') format('woff2');
   font-style: normal;
   font-weight: 100 1000;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Adwaita Sans";
-  src: url("/fonts/AdwaitaSans-Italic.woff2") format("woff2");
+  font-family: 'Adwaita Sans';
+  src: url('/fonts/AdwaitaSans-Italic.woff2') format('woff2');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -28,8 +28,8 @@ body {
 
 body {
   background-color: var(--adw-window-bg-color);
-  font-family: "Adwaita Sans", sans-serif;
-  --bs-body-font-family: "Adwaita Sans", sans-serif;
+  font-family: 'Adwaita Sans', sans-serif;
+  --bs-body-font-family: 'Adwaita Sans', sans-serif;
 }
 
 button {
@@ -56,13 +56,21 @@ button svg * {
   padding: 0.5rem;
 }
 
-.btn:hover, .dropdown-item:hover, .list-group-item:hover {
+.btn:hover,
+.dropdown-item:hover,
+.list-group-item:hover {
   background-color: var(--tcb-overlay-hover);
 }
 
-.btn:active, .btn:first-child:active, .btn:focus-visible,
-.dropdown-item:active, .dropdown-item:focus, .dropdown-item:focus-visible,
-.list-group-item:active, .list-group-item:focus, .list-group-item:focus-visible {
+.btn:active,
+.btn:first-child:active,
+.btn:focus-visible,
+.dropdown-item:active,
+.dropdown-item:focus,
+.dropdown-item:focus-visible,
+.list-group-item:active,
+.list-group-item:focus,
+.list-group-item:focus-visible {
   background-color: var(--tcb-overlay-active) !important;
 }
 
@@ -71,8 +79,7 @@ button svg * {
   color: var(--adw-card-fg-color);
   border: 0;
   border-radius: var(--adw-border-radius) !important;
-  box-shadow:
-    0 0.125rem 0.25rem var(--adw-card-shade-color);
+  box-shadow: 0 0.125rem 0.25rem var(--adw-card-shade-color);
 }
 
 .card-header {
@@ -91,16 +98,16 @@ button svg * {
   box-shadow:
     0 0.5rem 1rem var(--adw-popover-shade-color),
     0 -0.25rem 0.5rem var(--adw-popover-shade-color);
-  }
-  
-  .dropdown-item {
-    background-color: var(--adw-popover-bg-color);
-    color: var(--adw-popover-fg-color);
+}
 
-    &:is(:hover, :focus, :focus-visible, :active) {
-      color: var(--adw-popover-fg-color);
-      border-radius: var(--adw-border-radius) !important;
-    }
+.dropdown-item {
+  background-color: var(--adw-popover-bg-color);
+  color: var(--adw-popover-fg-color);
+
+  &:is(:hover, :focus, :focus-visible, :active) {
+    color: var(--adw-popover-fg-color);
+    border-radius: var(--adw-border-radius) !important;
+  }
 }
 
 .list-group {
@@ -109,9 +116,8 @@ button svg * {
   margin: 1rem 0rem 1rem 0rem;
   border: 0;
   border-radius: var(--adw-border-radius) !important;
-  box-shadow:
-    0 0.125rem 0.25rem var(--adw-card-shade-color);
-  
+  box-shadow: 0 0.125rem 0.25rem var(--adw-card-shade-color);
+
   .list-group-item {
     padding: 1rem;
   }
@@ -119,11 +125,11 @@ button svg * {
 
 /* Custom classes */
 
-[data-custom-theme="light"] {
+[data-custom-theme='light'] {
   --tcb-overlay-color: black;
 }
 
-[data-custom-theme="dark"] {
+[data-custom-theme='dark'] {
   --tcb-overlay-color: white;
 }
 
@@ -153,12 +159,24 @@ button svg * {
 }
 
 .adw-btn-destructive-action {
-  --tcb-overlay-raised: color-mix(in srgb, var(--adw-destructive-bg-color), var(--tcb-overlay-color) 4%);
-  --tcb-overlay-hover: color-mix(in srgb, var(--adw-destructive-bg-color), var(--tcb-overlay-color) 8%);
-  --tcb-overlay-active: color-mix(in srgb, var(--adw-destructive-bg-color), var(--tcb-overlay-color) 16%);
+  --tcb-overlay-raised: color-mix(
+    in srgb,
+    var(--adw-destructive-bg-color),
+    var(--tcb-overlay-color) 4%
+  );
+  --tcb-overlay-hover: color-mix(
+    in srgb,
+    var(--adw-destructive-bg-color),
+    var(--tcb-overlay-color) 8%
+  );
+  --tcb-overlay-active: color-mix(
+    in srgb,
+    var(--adw-destructive-bg-color),
+    var(--tcb-overlay-color) 16%
+  );
   background-color: var(--adw-destructive-bg-color);
   color: var(--adw-destructive-fg-color);
-  
+
   &:is(:hover, :focus, :focus-visible, :active) {
     color: var(--adw-destructive-fg-color);
   }
@@ -173,7 +191,7 @@ button svg * {
   --tcb-overlay-hover: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 8%);
   --tcb-overlay-active: color-mix(in srgb, var(--adw-accent-purple), var(--tcb-overlay-color) 16%);
   background-color: var(--adw-accent-purple);
-  
+
   &:focus {
     background-color: var(--adw-accent-purple);
   }

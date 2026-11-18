@@ -5,4 +5,4 @@ export const BackupFileSchema = z.object({
   notes: z.array(NoteSchema),
 })
 
-export type BackupFile = z.infer<typeof BackupFileSchema>;
+export type BackupFile = z.infer<typeof BackupFileSchema>

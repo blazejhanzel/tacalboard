@@ -1,4 +1,4 @@
-import { db } from "@/database/connection.js"
+import { db } from "@/database/connection.js";
 
 export function setup() {
   db.exec(`ALTER TABLE changes RENAME TO sync_operations;`);

@@ -4,12 +4,7 @@ import { registerOperation } from './syncOperations'
 import { type Note } from '@tacalboard/shared'
 
 export function observeNotes(): Observable<Note[]> {
-  return liveQuery(() =>
-    db.notes
-      .orderBy('modifiedAt')
-      .reverse()
-      .toArray()
-  )
+  return liveQuery(() => db.notes.orderBy('modifiedAt').reverse().toArray())
 }
 
 export async function createNote(content: string) {

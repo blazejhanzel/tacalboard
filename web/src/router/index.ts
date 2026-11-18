@@ -20,7 +20,7 @@ const router = createRouter({
         title: 'header.backupAndRestoreView',
         navigationBack: true,
         showSyncStatus: false,
-        showAppMenu: false
+        showAppMenu: false,
       },
     },
     {
@@ -39,7 +39,7 @@ const router = createRouter({
       component: () => import('@/views/NotepadView.vue'),
       meta: {
         bottomBar: 'navbar',
-      }
+      },
     },
     {
       path: '/settings',

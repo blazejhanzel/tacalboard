@@ -4,12 +4,12 @@ import { RouterLink } from 'vue-router'
 defineProps({
   to: {
     type: String,
-    required: true
+    required: true,
   },
   label: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 </script>
 

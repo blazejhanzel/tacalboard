@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
-import MarkdownIt from "markdown-it"
+import MarkdownIt from 'markdown-it'
 import { tasklist } from '@mdit/plugin-tasklist'
 import AlertDialog from '@/components/AlertDialog.vue'
-import IconMoreSmall from "@/components/icons/IconMoreSmall.vue"
-import { updateNote, deleteNote } from "@/database/notes"
+import IconMoreSmall from '@/components/icons/IconMoreSmall.vue'
+import { updateNote, deleteNote } from '@/database/notes'
 
 const { t } = useI18n()
 const settings = useSettingsStore()
 
 const props = defineProps<{
-  id: string,
+  id: string
   content: string
-  date: Date,
+  date: Date
 }>()
 
 const showRemoveDialog = ref(false)
@@ -24,26 +24,26 @@ const dateFormats: Record<
   'today' | 'recent' | 'currentYear' | 'older',
   Intl.DateTimeFormatOptions
 > = {
-   today: {
+  today: {
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   },
   recent: {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   },
   currentYear: {
     day: 'numeric',
-    month: 'long'
+    month: 'long',
   },
   older: {
     day: 'numeric',
     month: 'long',
-    year: 'numeric'
-  }
+    year: 'numeric',
+  },
 }
 
 const dateFormatted = (() => {
@@ -55,25 +55,18 @@ const dateFormatted = (() => {
     props.date.getDate() === now.getDate()
 
   if (isToday) {
-    const time = new Intl.DateTimeFormat(
-      settings.locale,
-      dateFormats.today
-    ).format(props.date)
+    const time = new Intl.DateTimeFormat(settings.locale, dateFormats.today).format(props.date)
 
     return `${t('dates.today')}, ${time}`
-  }
-  else {
+  } else {
     const isYesterday =
       props.date.getFullYear() === now.getFullYear() &&
       props.date.getMonth() === now.getMonth() &&
       props.date.getDate() === now.getDate() - 1
 
     if (isYesterday) {
-      const time = new Intl.DateTimeFormat(
-        settings.locale,
-        dateFormats.today
-      ).format(props.date)
-  
+      const time = new Intl.DateTimeFormat(settings.locale, dateFormats.today).format(props.date)
+
       return `${t('dates.yesterday')}, ${time}`
     }
   }
@@ -91,17 +84,14 @@ const dateFormatted = (() => {
     format = dateFormats.older
   }
 
-  return new Intl.DateTimeFormat(
-    settings.locale,
-    format
-  ).format(props.date)
+  return new Intl.DateTimeFormat(settings.locale, format).format(props.date)
 })()
-  
+
 const md = new MarkdownIt({
-    breaks: true
-  }).use(tasklist as any, {
-    disabled: false
-  })
+  breaks: true,
+}).use(tasklist as any, {
+  disabled: false,
+})
 
 const html = computed(() => md.render(props.content))
 
@@ -130,10 +120,7 @@ async function toggleTask(taskIndex: number, checked: boolean) {
     if (!line || !/^\s*[-*+]\s+\[[ xX]\]/.test(line)) continue
 
     if (currentIndex === taskIndex) {
-      lines[i] = line.replace(
-        /^(\s*[-*+]\s+)\[[ xX]\]/,
-        `$1[${checked ? 'x' : ' '}]`
-      )
+      lines[i] = line.replace(/^(\s*[-*+]\s+)\[[ xX]\]/, `$1[${checked ? 'x' : ' '}]`)
 
       break
     }
@@ -164,7 +151,13 @@ async function removeNote() {
       </div>
       <div class="flex-shrink-1">
         <div class="dropdown-center">
-          <button type="button" class="btn adw-btn-circular" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+          <button
+            type="button"
+            class="btn adw-btn-circular"
+            data-bs-toggle="dropdown"
+            data-bs-display="static"
+            aria-expanded="false"
+          >
             <IconMoreSmall />
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -173,13 +166,17 @@ async function removeNote() {
                 class="dropdown-item"
                 :to="{
                   name: 'note-edit',
-                  params: { id: props.id }
+                  params: { id: props.id },
                 }"
               >
                 {{ t('common.edit') }}
               </RouterLink>
             </li>
-            <li><button class="dropdown-item adw-destructive-action" type="button" @click="askRemove">{{ t('common.delete') }}</button></li>
+            <li>
+              <button class="dropdown-item adw-destructive-action" type="button" @click="askRemove">
+                {{ t('common.delete') }}
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -198,7 +195,7 @@ async function removeNote() {
 <style scoped>
 .card-body :deep(h1) {
   font-size: 1.6rem;
-  margin-bottom: .75rem;
+  margin-bottom: 0.75rem;
 }
 
 .card-body :deep(h2) {
@@ -220,7 +217,7 @@ async function removeNote() {
 }
 
 .card-body :deep(code) {
-  font-size: .9em;
+  font-size: 0.9em;
 }
 
 .card-body :deep(blockquote) {

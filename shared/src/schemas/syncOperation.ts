@@ -11,7 +11,7 @@ export const SyncOperationSchema = z.object({
 });
 
 export const NewSyncOperationSchema = SyncOperationSchema.omit({
-  id: true
+  id: true,
 });
 
 export type Operation = z.infer<typeof OperationSchema>;

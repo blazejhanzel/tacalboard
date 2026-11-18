@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { Note } from '@tacalboard/shared';
-import { createNote, observeNotes } from '@/database/notes';
-import NoteCard from "@/components/NoteCard.vue"
+import type { Note } from '@tacalboard/shared'
+import { createNote, observeNotes } from '@/database/notes'
+import NoteCard from '@/components/NoteCard.vue'
 import IconPaperPlane from '@/components/icons/IconPaperPlane.vue'
 
 const { t } = useI18n()
@@ -16,12 +16,12 @@ const isClickingSendButton = ref(false)
 const dumpTextarea = ref<HTMLTextAreaElement | null>(null)
 
 const notesSubscription = observeNotes().subscribe({
-  next: value => {
+  next: (value) => {
     notes.value = value
   },
-  error: error => {
+  error: (error) => {
     console.error('Error when pulling notes from database:', error)
-  }
+  },
 })
 
 async function addNote() {
@@ -59,7 +59,7 @@ function handleBlur() {
 }
 
 onMounted(() => {
-  autoResize();
+  autoResize()
 })
 
 onUnmounted(() => {
@@ -68,7 +68,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="container" :class="{ 'h-100': notes.length === 0}">
+  <div class="container" :class="{ 'h-100': notes.length === 0 }">
     <div class="card" :class="{ editing: isWritingDumpNote }" id="dump-composer">
       <div class="card-body p-0 d-flex">
         <textarea
@@ -81,10 +81,15 @@ onUnmounted(() => {
           @keydown.ctrl.enter.prevent="addNote"
           @focus="isWritingDumpNote = true"
           @blur="handleBlur"
-          :placeholder="t('notes.composerPlaceholder')">
+          :placeholder="t('notes.composerPlaceholder')"
+        >
         </textarea>
         <div class="flex-shrink-1 align-self-center p-3">
-          <button class="btn adw-btn-circular adw-btn-suggested-action" @mousedown="isClickingSendButton = true" @click="addNote">
+          <button
+            class="btn adw-btn-circular adw-btn-suggested-action"
+            @mousedown="isClickingSendButton = true"
+            @click="addNote"
+          >
             <IconPaperPlane />
           </button>
         </div>
@@ -99,9 +104,13 @@ onUnmounted(() => {
         :date="note.modifiedAt"
       />
     </div>
-    <div v-else id="empty-placeholder" class="d-flex align-items-center gap-3 pt-3 pb-3 text-center">
+    <div
+      v-else
+      id="empty-placeholder"
+      class="d-flex align-items-center gap-3 pt-3 pb-3 text-center"
+    >
       <div class="m-auto">
-        {{t('notes.emptyPlaceholder')}}
+        {{ t('notes.emptyPlaceholder') }}
       </div>
     </div>
   </div>
@@ -112,13 +121,11 @@ onUnmounted(() => {
   position: sticky;
   top: 16px;
   z-index: 1030;
-  box-shadow:
-    0 0.25rem 0.5rem var(--adw-card-shade-color);
-  
+  box-shadow: 0 0.25rem 0.5rem var(--adw-card-shade-color);
+
   &.editing {
     position: fixed;
-    bottom:
-      calc(var(--tcb-bottom-navbar-height) + 1rem);
+    bottom: calc(var(--tcb-bottom-navbar-height) + 1rem);
     left: 0;
     right: 0;
     top: auto;

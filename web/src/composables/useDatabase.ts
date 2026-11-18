@@ -16,10 +16,7 @@ async function exportToFile() {
     data.notes = await db.table(tableName).toArray()
   }
 
-  const blob = new Blob(
-    [JSON.stringify(data, null, 2)],
-    { type: 'application/json' }
-  );
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
 
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -33,8 +30,9 @@ async function exportToFile() {
 }
 
 async function importFromFile(): Promise<boolean> {
-  if (!selectedFile.value || !importMode.value)
-    return false
+  if (!selectedFile.value || !importMode.value) return false
+
+  // TODO: Zweryfikować tryby replace i append, zastosować to odpowiednio jeśli baza korzysta też z synchronizacji z serwerem
 
   try {
     const json: unknown = JSON.parse(await selectedFile.value.text())
@@ -44,7 +42,7 @@ async function importFromFile(): Promise<boolean> {
       if (importMode.value === 'replace') {
         await db.appStates.put({
           key: 'syncCursor',
-          value: 0
+          value: 0,
         })
         await db.syncOperations.clear()
         await db.notes.clear()
@@ -68,6 +66,6 @@ export function useDatabase() {
     exportToFile,
     importFromFile,
     importMode,
-    selectedFile
+    selectedFile,
   }
 }

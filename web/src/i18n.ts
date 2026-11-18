@@ -11,6 +11,6 @@ export const i18n = createI18n({
 
   messages: {
     'en-GB': enGB,
-    'pl-PL': plPL
-  }
+    'pl-PL': plPL,
+  },
 })

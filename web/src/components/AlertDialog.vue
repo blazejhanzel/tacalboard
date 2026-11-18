@@ -34,7 +34,7 @@ watch(
     } else {
       document.removeEventListener('keydown', handleKeydown)
     }
-  }
+  },
 )
 </script>
 

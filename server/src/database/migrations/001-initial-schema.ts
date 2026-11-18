@@ -1,4 +1,4 @@
-import { db } from "@/database/connection.js"
+import { db } from "@/database/connection.js";
 
 export function setup() {
   db.exec(`
@@ -10,7 +10,7 @@ export function setup() {
       revision INTEGER NOT NULL
     )
   `);
-  
+
   // TODO: Change table to "sync_operations" to be the same as in frontend
   db.exec(`
     CREATE TABLE IF NOT EXISTS changes (

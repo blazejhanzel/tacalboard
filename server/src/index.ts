@@ -1,26 +1,27 @@
-import Fastify from "fastify"
-import swagger from "@fastify/swagger"
-import swaggerUi from "@fastify/swagger-ui"
-import fastifyStatic from "@fastify/static"
-import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox"
-import { join } from "node:path"
-import { readFileSync } from 'node:fs'
-import syncRoutes from "@/routes/sync.js"
-import statusRoutes from "@/routes/status.js"
+import Fastify from "fastify";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
+import fastifyStatic from "@fastify/static";
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import { join } from "node:path";
+import { readFileSync } from "node:fs";
+import syncRoutes from "@/routes/sync.js";
+import statusRoutes from "@/routes/status.js";
 
 // Version info
-const packageJson = JSON.parse(readFileSync('../package.json', 'utf-8'))
-const version = packageJson.version
-const channel = process.env.BUILD_CHANNEL ?? 'dev'
-const buildNumber = process.env.BUILD_NUMBER
-const gitSha = process.env.GIT_SHA?.slice(0, 7)
-const __APP_VERSION__ = buildNumber && gitSha
-  ? `${version}-${channel}.${buildNumber}+${'g' + gitSha}`
-  : `${version}-${channel}+${gitSha ? 'g' + gitSha : 'local'}`
+const packageJson = JSON.parse(readFileSync("../package.json", "utf-8"));
+const version = packageJson.version;
+const channel = process.env.BUILD_CHANNEL ?? "dev";
+const buildNumber = process.env.BUILD_NUMBER;
+const gitSha = process.env.GIT_SHA?.slice(0, 7);
+const __APP_VERSION__ =
+  buildNumber && gitSha
+    ? `${version}-${channel}.${buildNumber}+${"g" + gitSha}`
+    : `${version}-${channel}+${gitSha ? "g" + gitSha : "local"}`;
 
 const app = Fastify({
-  logger: true
-}).withTypeProvider<TypeBoxTypeProvider>()
+  logger: true,
+}).withTypeProvider<TypeBoxTypeProvider>();
 
 await app.register(swagger, {
   openapi: {
@@ -28,44 +29,48 @@ await app.register(swagger, {
     info: {
       title: "Tacalboard API",
       description: "API for Tacalboard",
-      version: __APP_VERSION__
-    }
-  }
-})
+      version: __APP_VERSION__,
+    },
+  },
+});
 
 await app.register(swaggerUi, {
-  routePrefix: "/docs"
-})
+  routePrefix: "/docs",
+});
 
 await app.register(syncRoutes, {
-  prefix: "/api/sync"
-})
+  prefix: "/api/sync",
+});
 
 await app.register(statusRoutes, {
-  prefix: "/api/status"
-})
+  prefix: "/api/status",
+});
 
 await app.register(fastifyStatic, {
   root: join(process.cwd(), "..", "web", "dist"),
   prefix: "/",
-})
+});
 
 app.setNotFoundHandler((request, reply) => {
-  const url = request.raw.url ?? "/"
+  const url = request.raw.url ?? "/";
 
-  if (url === "/api" || url.startsWith("/api/") ||
-      url === "/docs" || url.startsWith("/docs/")) {
+  if (
+    url === "/api" ||
+    url.startsWith("/api/") ||
+    url === "/docs" ||
+    url.startsWith("/docs/")
+  ) {
     return reply.code(404).send({
       statusCode: 404,
       error: "Not Found",
-      message: "Route not found"
-    })
+      message: "Route not found",
+    });
   }
 
-  return reply.sendFile("index.html")
-})
+  return reply.sendFile("index.html");
+});
 
 await app.listen({
   port: Number(process.env.PORT ?? 8080),
-  host: "0.0.0.0"
-})
+  host: "0.0.0.0",
+});

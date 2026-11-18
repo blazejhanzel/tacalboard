@@ -16,18 +16,17 @@ async function sync() {
   syncStatus.value = 'syncing'
 
   try {
-    
     const request = await prepareRequest()
     const response = await sendRequest(request)
-  
+
     if (!response.ok) {
       throw new Error(`Sync failed: ${response.status}`)
     }
-  
+
     // Remove pending syncOperations which were send to server and then proceed response
-    await db.syncOperations.bulkDelete(request.operations?.map(op => op.id!) ?? [])
+    await db.syncOperations.bulkDelete(request.operations?.map((op) => op.id!) ?? [])
     await proceedResponse(response)
-  
+
     await updateSyncStatus() // TODO: Zmienić nazwę albo ogólnie sposób podliczania tego na realtime, ta funkcja jest źle opisana
   } catch (error) {
     syncStatus.value = 'sync-failed'
@@ -39,7 +38,7 @@ async function prepareRequest(): Promise<SyncRequest> {
   const request: SyncRequest = {
     operations: await db.syncOperations.toArray(),
     notes: [],
-    syncCursor: Number((await db.appStates.get('syncCursor'))?.value ?? 0)
+    syncCursor: Number((await db.appStates.get('syncCursor'))?.value ?? 0),
   }
 
   for (const operation of request.operations ?? []) {
@@ -61,9 +60,9 @@ async function sendRequest(body: SyncRequest): Promise<Response> {
   const response = await fetch('/api/sync', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   })
 
   return response
@@ -72,16 +71,16 @@ async function sendRequest(body: SyncRequest): Promise<Response> {
 async function proceedResponse(response: Response): Promise<void> {
   const rawData: unknown = await response.json()
   const data: SyncRequest = SyncRequestSchema.parse(rawData)
-  
+
   await db.transaction('rw', db.notes, db.appStates, db.syncOperations, async () => {
     if (data.operations) {
       await proceedIncomingOperations(data)
     }
-  
+
     // Set new syncCursor corelated with server response
     await db.appStates.put({
       key: 'syncCursor',
-      value: String(data.syncCursor)
+      value: String(data.syncCursor),
     })
   })
 
@@ -89,7 +88,7 @@ async function proceedResponse(response: Response): Promise<void> {
 }
 
 async function proceedIncomingOperations(request: SyncRequest): Promise<void> {
-  const notesById = new Map<string, Note>(request.notes?.map(note => [note.id, note]) ?? [])
+  const notesById = new Map<string, Note>(request.notes?.map((note) => [note.id, note]) ?? [])
 
   for (const operation of request.operations!) {
     const entity = (() => {
@@ -101,25 +100,27 @@ async function proceedIncomingOperations(request: SyncRequest): Promise<void> {
 
     if (operation.operation === 'delete') {
       if (await hasNewerChanges(operation)) {
-        await registerEntityAsNewlyCreated(operation.entityType, operation.entityId, crypto.randomUUID())
-      }
-      else {
+        await registerEntityAsNewlyCreated(
+          operation.entityType,
+          operation.entityId,
+          crypto.randomUUID(),
+        )
+      } else {
         await registerDeleteOperation(operation)
       }
-    }
-    else {
+    } else {
       if (!entity) {
         continue
       }
 
-      if (operation.operation === 'update' && await hasNewerChanges(operation)) {
+      if (operation.operation === 'update' && (await hasNewerChanges(operation))) {
         // If server has newest version, convert update operation to create operation
         const newId = crypto.randomUUID()
         operation.operation = 'create'
         operation.entityId = newId
         entity.id = newId
       }
-  
+
       // operation.operation === 'create' || operation.operation === 'update'
       await registerCreateUpdateOperation(operation.entityType, entity)
     }
@@ -127,16 +128,18 @@ async function proceedIncomingOperations(request: SyncRequest): Promise<void> {
 }
 
 async function hasNewerChanges(operation: SyncOperation): Promise<boolean> {
-  return await db.syncOperations
-    .where('[entityType+entityId]')
-    .equals([operation.entityType, operation.entityId])
-    .count() > 0
+  return (
+    (await db.syncOperations
+      .where('[entityType+entityId]')
+      .equals([operation.entityType, operation.entityId])
+      .count()) > 0
+  )
 }
 
 async function registerEntityAsNewlyCreated(
   entityType: SyncOperation['entityType'],
   oldEntityId: string,
-  newEntityId: string
+  newEntityId: string,
 ): Promise<void> {
   const tableName = `${entityType}s`
   const entityTable = db.table(tableName)
@@ -150,7 +153,7 @@ async function registerEntityAsNewlyCreated(
   await entityTable.delete(oldEntityId)
   await entityTable.put({
     ...entity,
-    id: newEntityId
+    id: newEntityId,
   })
 
   await db.syncOperations
@@ -161,7 +164,7 @@ async function registerEntityAsNewlyCreated(
 
 async function registerCreateUpdateOperation<T extends Entity>(
   entityType: SyncOperation['entityType'],
-  entity: T
+  entity: T,
 ): Promise<void> {
   const table = db.table(`${entityType}s`) as Table<T, string>
   await table.put(entity)
@@ -192,6 +195,6 @@ export function useSync() {
     syncStatus: readonly(syncStatus),
     sync,
     initializeSync,
-    updateSyncStatus
+    updateSyncStatus,
   }
 }

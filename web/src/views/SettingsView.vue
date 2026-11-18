@@ -1,5 +1,3 @@
 <template>
-  <div class="container">
-    Settings
-  </div>
+  <div class="container">Settings</div>
 </template>

@@ -22,7 +22,7 @@ const props = defineProps<{
   isScrolled: boolean
 }>()
 
-const title = computed(() => route.meta.title ? t(route.meta.title as string) : 'Tacalboard')
+const title = computed(() => (route.meta.title ? t(route.meta.title as string) : 'Tacalboard'))
 const hasSidebar = computed(() => route.meta.sidebar ?? false)
 const showBackButton = computed(() => route.meta.navigationBack ?? false)
 const showSyncStatus = computed(() => route.meta.showSyncStatus ?? true)
@@ -66,18 +66,32 @@ function goBack() {
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li>
-                <RouterLink :to="'/backup-and-restore'" class="dropdown-item w-100" type="button" aria-expanded="false">
-                  <span>{{  t('app.backupAndRestore') }}</span>
+                <RouterLink
+                  :to="'/backup-and-restore'"
+                  class="dropdown-item w-100"
+                  type="button"
+                  aria-expanded="false"
+                >
+                  <span>{{ t('app.backupAndRestore') }}</span>
                 </RouterLink>
               </li>
               <li>
-                <RouterLink :to="'/settings'" class="dropdown-item w-100" type="button" aria-expanded="false">
+                <RouterLink
+                  :to="'/settings'"
+                  class="dropdown-item w-100"
+                  type="button"
+                  aria-expanded="false"
+                >
                   <span>{{ t('app.settings') }}</span>
                 </RouterLink>
               </li>
-              <li><hr class="dropdown-divider m-1"></li>
+              <li><hr class="dropdown-divider m-1" /></li>
               <li>
-                <button class="dropdown-item d-flex gap-2 align-items-center w-100" type="button" disabled>
+                <button
+                  class="dropdown-item d-flex gap-2 align-items-center w-100"
+                  type="button"
+                  disabled
+                >
                   <span>Wersja: {{ appVersion }}</span>
                 </button>
               </li>

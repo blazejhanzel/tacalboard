@@ -13,7 +13,7 @@ export function migrateDatabase() {
 
   for (const migration of migrations) {
     if (migration.version <= currentVersion) {
-      continue
+      continue;
     }
 
     db.exec("BEGIN");
@@ -23,7 +23,7 @@ export function migrateDatabase() {
 
       db.exec(`PRAGMA user_version = ${migration.version}`);
       db.exec("COMMIT");
-      
+
       console.log(`Database migrated to version ${getDatabaseVersion()}`);
     } catch (error) {
       db.exec("ROLLBACK");
