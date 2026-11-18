@@ -1,9 +1,9 @@
-import { liveQuery } from 'dexie'
+import { liveQuery, type Observable } from 'dexie'
 import { db } from './database'
 import { registerOperation } from './syncOperations'
-import type { Note } from '@tacalboard/shared'
+import { type Note } from '@tacalboard/shared'
 
-export function observeNotes() {
+export function observeNotes(): Observable<Note[]> {
   return liveQuery(() =>
     db.notes
       .orderBy('modifiedAt')
@@ -15,35 +15,25 @@ export function observeNotes() {
 export async function createNote(content: string) {
   const id = crypto.randomUUID()
   const now = new Date()
-
-  await db.notes.add({
+  const note: Note = {
     id,
     content,
     createdAt: now,
     modifiedAt: now,
-    revision: 0
-  })
+  }
 
+  await db.notes.add(note)
   await registerOperation('create', 'note', id)
 }
 
-export async function readNote(id: string) {
+export async function readNote(id: string): Promise<Note | undefined> {
   return db.notes.get(id)
 }
 
 export async function updateNote(id: string, content: string) {
-  const note = await readNote(id)
-  const revision = (() => {
-    if (note && note.revision != null) {
-      return note.revision + 1
-    }
-    return 0
-  })()
-
   await db.notes.update(id, {
     content,
     modifiedAt: new Date(),
-    revision
   })
 
   await registerOperation('update', 'note', id)
@@ -52,12 +42,4 @@ export async function updateNote(id: string, content: string) {
 export async function deleteNote(id: string) {
   await db.notes.delete(id)
   await registerOperation('delete', 'note', id)
-}
-
-export function normalizeNote(note: Note): Note {
-  return {
-    ...note,
-    createdAt: new Date(note.createdAt),
-    modifiedAt: new Date(note.modifiedAt)
-  }
 }

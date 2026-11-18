@@ -1,5 +1,6 @@
 import { readonly, ref } from 'vue'
-import { db } from '../database/database'
+import { db } from '@/database/database'
+import { SyncRequestSchema } from '@tacalboard/shared'
 import type { Entity, Note, SyncOperation, SyncRequest } from '@tacalboard/shared'
 import type { SyncStatus } from '@/types/syncStatus'
 import type { Table } from 'dexie'
@@ -15,18 +16,18 @@ async function sync() {
   syncStatus.value = 'syncing'
 
   try {
-
-  const request = await prepareRequest()
-  const response = await sendRequest(request)
-
-  if (!response.ok) {
-    throw new Error(`Sync failed: ${response.status}`)
-  }
-
-  // Remove pending syncOperations which were send to server and then proceed response
-  await db.syncOperations.bulkDelete(request.operations?.map(op => op.id!) ?? [])
-  await proceedResponse(response)
-
+    
+    const request = await prepareRequest()
+    const response = await sendRequest(request)
+  
+    if (!response.ok) {
+      throw new Error(`Sync failed: ${response.status}`)
+    }
+  
+    // Remove pending syncOperations which were send to server and then proceed response
+    await db.syncOperations.bulkDelete(request.operations?.map(op => op.id!) ?? [])
+    await proceedResponse(response)
+  
     await updateSyncStatus() // TODO: Zmienić nazwę albo ogólnie sposób podliczania tego na realtime, ta funkcja jest źle opisana
   } catch (error) {
     syncStatus.value = 'sync-failed'
@@ -38,16 +39,16 @@ async function prepareRequest(): Promise<SyncRequest> {
   const request: SyncRequest = {
     operations: await db.syncOperations.toArray(),
     notes: [],
-    syncCursor: Number((await db.systemStatuses.get('syncCursor'))?.value ?? 0)
+    syncCursor: Number((await db.appStates.get('syncCursor'))?.value ?? 0)
   }
 
   for (const operation of request.operations ?? []) {
     if (operation.operation === 'create' || operation.operation === 'update') {
-      if (operation.entityType === 'note') {
-        const note = await db.notes.get(operation.entityId)
-  
-        if (note) {
-          request.notes.push(note)
+      switch (operation.entityType) {
+        case 'note': {
+          const note = await db.notes.get(operation.entityId)
+          if (note) request.notes!.push(note)
+          continue
         }
       }
     }
@@ -56,56 +57,45 @@ async function prepareRequest(): Promise<SyncRequest> {
   return request
 }
 
-async function sendRequest(bodyJson: Object) {
+async function sendRequest(body: SyncRequest): Promise<Response> {
   const response = await fetch('/api/sync', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(bodyJson)
+    body: JSON.stringify(body)
   })
 
   return response
 }
 
-async function proceedResponse(response: Response) {
-  // TODO: Zaimplementować synchronizację zwrotną
-  const data: SyncRequest = await response.json()
-  console.log(data) // TODO: Temporary for testing
-
-  for (const note of data.notes) {
-    note.createdAt = new Date(note.createdAt)
-    note.modifiedAt = new Date(note.modifiedAt)
-  }
+async function proceedResponse(response: Response): Promise<void> {
+  const rawData: unknown = await response.json()
+  const data: SyncRequest = SyncRequestSchema.parse(rawData)
   
-  await db.transaction(
-    'rw',
-    db.notes,
-    db.systemStatuses,
-    db.syncOperations,
-    async () => {
-      if (data.operations) {
-        await proceedIncomingOperations(data)
-      }
-    
-      // Clear pending operations
-      await db.systemStatuses.put({
-        key: 'syncCursor',
-        value: String(data.syncCursor)
-      })
+  await db.transaction('rw', db.notes, db.appStates, db.syncOperations, async () => {
+    if (data.operations) {
+      await proceedIncomingOperations(data)
     }
-  )
+  
+    // Set new syncCursor corelated with server response
+    await db.appStates.put({
+      key: 'syncCursor',
+      value: String(data.syncCursor)
+    })
+  })
 
   // TODO: Usunąć wszystkie pola revision z baz i typów notatek
 }
 
-async function proceedIncomingOperations(request: SyncRequest) {
-  const notesById = new Map<string, Note>(request.notes.map(note => [note.id, note]))
+async function proceedIncomingOperations(request: SyncRequest): Promise<void> {
+  const notesById = new Map<string, Note>(request.notes?.map(note => [note.id, note]) ?? [])
 
   for (const operation of request.operations!) {
     const entity = (() => {
-      if (operation.entityType === 'note') {
-        return notesById.get(operation.entityId)
+      switch (operation.entityType) {
+        case 'note':
+          return notesById.get(operation.entityId)
       }
     })()
 
@@ -174,7 +164,6 @@ async function registerCreateUpdateOperation<T extends Entity>(
   entity: T
 ): Promise<void> {
   const table = db.table(`${entityType}s`) as Table<T, string>
-
   await table.put(entity)
 }
 

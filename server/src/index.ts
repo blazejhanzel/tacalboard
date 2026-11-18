@@ -4,9 +4,9 @@ import swaggerUi from "@fastify/swagger-ui"
 import fastifyStatic from "@fastify/static"
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox"
 import { join } from "node:path"
-import QRCode from "qrcode"
 import { readFileSync } from 'node:fs'
 import syncRoutes from "@/routes/sync.js"
+import statusRoutes from "@/routes/status.js"
 
 // Version info
 const packageJson = JSON.parse(readFileSync('../package.json', 'utf-8'))
@@ -41,10 +41,8 @@ await app.register(syncRoutes, {
   prefix: "/api/sync"
 })
 
-app.get('/api/status', async () => {
-  return {
-    status: 'ok'
-  }
+await app.register(statusRoutes, {
+  prefix: "/api/status"
 })
 
 await app.register(fastifyStatic, {

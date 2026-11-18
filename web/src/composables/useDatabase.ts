@@ -1,17 +1,19 @@
 import { ref } from 'vue'
 import { db } from '@/database/database'
 import { registerOperation } from '@/database/syncOperations'
-import { normalizeNote } from '@/database/notes'
+import { BackupFileSchema, type BackupFile } from '@/schemas/backupFile'
 
 const importMode = ref<'replace' | 'append'>('replace')
 const selectedFile = ref<File | null>(null)
 
 async function exportToFile() {
   const tablesToExport = ['notes']
-  const data: Record<string, unknown[]> = {}
+  const data: BackupFile = {
+    notes: [],
+  }
 
   for (const tableName of tablesToExport) {
-    data[tableName] = await db.table(tableName).toArray()
+    data.notes = await db.table(tableName).toArray()
   }
 
   const blob = new Blob(
@@ -35,11 +37,12 @@ async function importFromFile(): Promise<boolean> {
     return false
 
   try {
-    const json = JSON.parse(await selectedFile.value.text())
+    const json: unknown = JSON.parse(await selectedFile.value.text())
+    const data: BackupFile = BackupFileSchema.parse(json)
 
-    await db.transaction('rw', db.notes, db.syncOperations, db.systemStatuses, async () => {
+    await db.transaction('rw', db.notes, db.syncOperations, db.appStates, async () => {
       if (importMode.value === 'replace') {
-        await db.systemStatuses.put({
+        await db.appStates.put({
           key: 'syncCursor',
           value: 0
         })
@@ -47,9 +50,9 @@ async function importFromFile(): Promise<boolean> {
         await db.notes.clear()
       }
 
-      for (const note of json.notes) {
-        await db.notes.put(normalizeNote(note))
-        await registerOperation('create', 'note', note.id)
+      for (const note of data.notes) {
+        await db.notes.put(note)
+        await registerOperation('update', 'note', note.id)
       }
     })
   } catch (error) {

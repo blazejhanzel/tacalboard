@@ -2,5 +2,8 @@
     "name": "@tacalboard/shared",
     "private": true,
     "type": "module",
-    "main": "./src/index.ts"
+    "main": "./src/index.ts",
+    "dependencies": {
+        "zod": "^4.6.7"
+    }
 }
