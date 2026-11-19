@@ -3,7 +3,7 @@ import { db } from '@/database/database'
 import { registerOperation } from '@/database/syncOperations'
 import { BackupFileSchema, type BackupFile } from '@/schemas/backupFile'
 
-const importMode = ref<'replace' | 'append'>('replace')
+const importMode = ref<'replace' | 'append' | null>(null)
 const selectedFile = ref<File | null>(null)
 
 async function exportToFile() {
@@ -32,25 +32,25 @@ async function exportToFile() {
 async function importFromFile(): Promise<boolean> {
   if (!selectedFile.value || !importMode.value) return false
 
-  // TODO: Zweryfikować tryby replace i append, zastosować to odpowiednio jeśli baza korzysta też z synchronizacji z serwerem
-
   try {
     const json: unknown = JSON.parse(await selectedFile.value.text())
     const data: BackupFile = BackupFileSchema.parse(json)
 
     await db.transaction('rw', db.notes, db.syncOperations, db.appStates, async () => {
       if (importMode.value === 'replace') {
-        await db.appStates.put({
-          key: 'syncCursor',
-          value: 0,
-        })
         await db.syncOperations.clear()
         await db.notes.clear()
       }
 
       for (const note of data.notes) {
-        await db.notes.put(note)
-        await registerOperation('update', 'note', note.id)
+        const noteToPut = note
+
+        if (importMode.value === 'append') {
+          noteToPut.id = crypto.randomUUID()
+        }
+
+        await db.notes.put(noteToPut)
+        await registerOperation('update', 'note', noteToPut.id)
       }
     })
   } catch (error) {

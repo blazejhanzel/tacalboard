@@ -56,8 +56,7 @@ async function importDatabaseFile() {
             name="radioType"
             id="radioTypeReplace"
             value="replace"
-            v-model="database.importMode"
-            checked
+            v-model="database.importMode.value"
           />
           <span>{{ t('backupAndRestore.importTypes.replace') }}</span>
         </span>
@@ -70,7 +69,7 @@ async function importDatabaseFile() {
             name="radioType"
             id="radioTypeAppend"
             value="append"
-            v-model="database.importMode"
+            v-model="database.importMode.value"
           />
           <label class="form-check-label" for="radioTypeAppend">
             {{ t('backupAndRestore.importTypes.append') }}
@@ -100,7 +99,7 @@ async function importDatabaseFile() {
         class="list-group-item"
         type="button"
         id="importFileButton"
-        :disabled="!database.selectedFile"
+        :disabled="!database.selectedFile.value || !database.importMode.value"
         @click="importDatabaseFile"
       >
         {{ t('common.import') }}
