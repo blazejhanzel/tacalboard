@@ -37,7 +37,7 @@ export default {
   },
   header: {
     backupAndRestoreView: 'Backup and Restore',
-    noteEditView: 'Note edit', // TODO: Check note editing?
+    noteEditView: 'Editing note',
     settingsView: 'Settings',
   },
   navbar: {

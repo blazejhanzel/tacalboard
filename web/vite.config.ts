@@ -4,20 +4,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import { VitePWA } from 'vite-plugin-pwa'
-import { readFileSync } from 'node:fs'
-
-// Version info
-const packageJson = JSON.parse(readFileSync('../package.json', 'utf-8'))
-const version = packageJson.version
-const channel = process.env.BUILD_CHANNEL ?? 'dev'
-const buildNumber = process.env.BUILD_NUMBER
-const gitSha = process.env.GIT_SHA?.slice(0, 7)
-const isRelease = process.env.IS_RELEASE === 'true'
-const __APP_VERSION__ = isRelease
-  ? version
-  : buildNumber && gitSha
-    ? `${version}-${channel}.${buildNumber}+${'g' + gitSha}`
-    : `${version}-${channel}+${gitSha ? 'g' + gitSha : 'local'}`
+import { appMetadata } from './build/appMetadata'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -58,7 +45,7 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_VERSION__: JSON.stringify(__APP_VERSION__),
+    __APP_METADATA__: JSON.stringify(appMetadata),
   },
   server: {
     proxy: {

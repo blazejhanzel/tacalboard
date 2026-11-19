@@ -6,6 +6,7 @@ on:
       - master
     tags:
       - "v*"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,10 +15,9 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/blazejhanzel/tacalboard
-  BUILD_NUMBER: ${{ github.run_number }}
-  GIT_SHA: ${{ github.sha }}
   BUILD_CHANNEL: ${{ startsWith(github.ref, 'refs/tags/v') && 'release' || github.ref == 'refs/heads/master' && 'nightly' || 'dev' }}
-  IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+  BUILD_NUMBER: ${{ github.run_number }}
+  BUILD_SHA: ${{ github.sha }}
 
 jobs:
   docker:
@@ -33,8 +33,7 @@ jobs:
           echo "GITHUB_REF=$GITHUB_REF"
           echo "BUILD_CHANNEL=$BUILD_CHANNEL"
           echo "BUILD_NUMBER=$BUILD_NUMBER"
-          echo "GIT_SHA=$GIT_SHA"
-          echo "IS_RELEASE=$IS_RELEASE"
+          echo "BUILD_SHA=$BUILD_SHA"
 
       - name: Verify version
         if: startsWith(github.ref, 'refs/tags/v')
@@ -79,8 +78,7 @@ jobs:
           build-args: |
             BUILD_CHANNEL=${{ env.BUILD_CHANNEL }}
             BUILD_NUMBER=${{ env.BUILD_NUMBER }}
-            GIT_SHA=${{ env.GIT_SHA }}
-            IS_RELEASE=${{ env.IS_RELEASE }}
+            BUILD_SHA=${{ env.BUILD_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

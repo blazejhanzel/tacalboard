@@ -11,8 +11,7 @@ import IconOpenMenu from '@/components/icons/IconOpenMenu.vue'
 import IconUpdate from '@/components/icons/IconUpdate.vue'
 import { useSync } from '@/composables/useSync'
 
-const appVersion = __APP_VERSION__
-const developmentRun = true //TODO: import.meta.env.DEV
+const appMetadata = __APP_METADATA__
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -49,7 +48,12 @@ function goBack() {
           <a class="navbar-brand me-auto">{{ title }}</a>
         </div>
         <div class="col-2 p-0 d-flex gap-2 justify-content-end">
-          <button v-if="showSyncStatus" class="btn" :disabled="!developmentRun" @click="sync.sync">
+          <button
+            v-if="showSyncStatus"
+            class="btn"
+            :disabled="!appMetadata.productionBuild"
+            @click="sync.sync"
+          >
             <IconCloudFilled v-if="sync.syncStatus.value === 'synced'" />
             <IconUpdate v-else-if="sync.syncStatus.value === 'syncing'" />
             <IconCloudDisabled v-else-if="sync.syncStatus.value === 'not-synced'" />
@@ -92,7 +96,7 @@ function goBack() {
                   type="button"
                   disabled
                 >
-                  <span>Wersja: {{ appVersion }}</span>
+                  <span>Wersja: {{ appMetadata.versionString }}</span>
                 </button>
               </li>
             </ul>
