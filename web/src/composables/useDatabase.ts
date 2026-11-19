@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { db } from '@/database/database'
+import { db } from '@/database'
 import { registerOperation } from '@/database/syncOperations'
 import { BackupFileSchema, type BackupFile } from '@/schemas/backupFile'
 

@@ -1,5 +1,5 @@
 import { liveQuery, type Observable } from 'dexie'
-import { db } from './database'
+import { db } from '.'
 import { registerOperation } from './syncOperations'
 import { type Note } from '@tacalboard/shared'
 

@@ -1,4 +1,4 @@
-import { db } from './database'
+import { db } from '.'
 import { useSync } from '@/composables/useSync'
 
 import type { Operation, EntityType, NewSyncOperation } from '@tacalboard/shared'

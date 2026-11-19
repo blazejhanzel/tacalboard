@@ -1,9 +1,7 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { registerSW } from 'virtual:pwa-register'
 import { i18n } from './i18n'
-import { useTheme } from '@/composables/useTheme'
+import { useTheme } from '@/composables/useTheme.ts'
 import { useSync } from '@/composables/useSync.ts'
 
 import '@/assets/theme.scss'
@@ -23,11 +21,7 @@ registerSW({
   },
 })
 
-const pinia = createPinia()
-pinia.use(piniaPluginPersistedstate)
-
 const app = createApp(App)
-app.use(pinia)
 app.use(router)
 app.use(i18n)
 

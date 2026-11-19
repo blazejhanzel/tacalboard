@@ -1,5 +1,5 @@
 import { readonly, ref } from 'vue'
-import { db } from '@/database/database'
+import { db } from '@/database'
 import { SyncRequestSchema } from '@tacalboard/shared'
 import type { Entity, Note, SyncOperation, SyncRequest } from '@tacalboard/shared'
 import type { SyncStatus } from '@/types/syncStatus'

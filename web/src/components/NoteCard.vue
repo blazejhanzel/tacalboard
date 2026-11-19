@@ -2,15 +2,14 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
-import { useSettingsStore } from '@/stores/settings'
 import MarkdownIt from 'markdown-it'
 import { tasklist } from '@mdit/plugin-tasklist'
 import AlertDialog from '@/components/AlertDialog.vue'
 import IconMoreSmall from '@/components/icons/IconMoreSmall.vue'
 import { updateNote, deleteNote } from '@/database/notes'
+import { locale } from '@/composables/useAppStates'
 
 const { t } = useI18n()
-const settings = useSettingsStore()
 
 const props = defineProps<{
   id: string
@@ -55,7 +54,7 @@ const dateFormatted = (() => {
     props.date.getDate() === now.getDate()
 
   if (isToday) {
-    const time = new Intl.DateTimeFormat(settings.locale, dateFormats.today).format(props.date)
+    const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(props.date)
 
     return `${t('dates.today')}, ${time}`
   } else {
@@ -65,7 +64,7 @@ const dateFormatted = (() => {
       props.date.getDate() === now.getDate() - 1
 
     if (isYesterday) {
-      const time = new Intl.DateTimeFormat(settings.locale, dateFormats.today).format(props.date)
+      const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(props.date)
 
       return `${t('dates.yesterday')}, ${time}`
     }
@@ -84,7 +83,7 @@ const dateFormatted = (() => {
     format = dateFormats.older
   }
 
-  return new Intl.DateTimeFormat(settings.locale, format).format(props.date)
+  return new Intl.DateTimeFormat(locale.state.value, format).format(props.date)
 })()
 
 const md = new MarkdownIt({

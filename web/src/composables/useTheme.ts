@@ -1,28 +1,21 @@
 import { watch } from 'vue'
-import { useSettingsStore } from '@/stores/settings'
+import { theme } from './useAppStates'
 
 export function useTheme() {
-  const settings = useSettingsStore()
-
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
   function handleSystemThemeChange() {
-    const theme =
-      settings.theme === 'system' ? (mediaQuery.matches ? 'dark' : 'light') : settings.theme
+    const themeToSet =
+      theme.state.value === 'system' ? (mediaQuery.matches ? 'dark' : 'light') : theme.state.value
 
-    document.documentElement.setAttribute('data-bs-theme', theme)
-    document.documentElement.setAttribute('data-custom-theme', theme)
+    document.documentElement.setAttribute('data-bs-theme', themeToSet)
+    document.documentElement.setAttribute('data-custom-theme', themeToSet)
   }
 
-  watch(
-    () => settings.theme,
-    () => {
-      handleSystemThemeChange()
-    },
-  )
+  watch(theme.state, handleSystemThemeChange, { immediate: true })
 
   mediaQuery.addEventListener('change', () => {
-    if (settings.theme === 'system') {
+    if (theme.state.value === 'system') {
       handleSystemThemeChange()
     }
   })
