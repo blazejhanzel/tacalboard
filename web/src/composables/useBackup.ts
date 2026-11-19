@@ -4,9 +4,9 @@ import { registerOperation } from '@/database/syncOperations'
 import { BackupFileSchema, type BackupFile } from '@/schemas/backupFile'
 
 const importMode = ref<'replace' | 'append' | null>(null)
-const selectedFile = ref<File | null>(null)
+const importFile = ref<File | null>(null)
 
-async function exportToFile() {
+async function download() {
   const tablesToExport = ['notes']
   const data: BackupFile = {
     notes: [],
@@ -29,11 +29,11 @@ async function exportToFile() {
   URL.revokeObjectURL(url)
 }
 
-async function importFromFile(): Promise<boolean> {
-  if (!selectedFile.value || !importMode.value) return false
+async function upload(): Promise<boolean> {
+  if (!importFile.value || !importMode.value) return false
 
   try {
-    const json: unknown = JSON.parse(await selectedFile.value.text())
+    const json: unknown = JSON.parse(await importFile.value.text())
     const data: BackupFile = BackupFileSchema.parse(json)
 
     await db.transaction('rw', db.notes, db.syncOperations, db.appStates, async () => {
@@ -61,11 +61,11 @@ async function importFromFile(): Promise<boolean> {
   return true
 }
 
-export function useDatabase() {
+export function useBackup() {
   return {
-    exportToFile,
-    importFromFile,
+    download,
+    upload,
     importMode,
-    selectedFile,
+    importFile,
   }
 }

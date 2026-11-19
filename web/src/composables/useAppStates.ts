@@ -1,7 +1,5 @@
-import { ref, readonly, type Ref } from 'vue'
+import { ref, readonly } from 'vue'
 import { db } from '@/database'
-
-const states = new Map<string, Ref>()
 
 async function createAppState<T extends string | number>(key: string, defaultValue: T) {
   const savedState = await db.appStates.get(key)
@@ -26,7 +24,8 @@ async function createAppState<T extends string | number>(key: string, defaultVal
   }
 }
 
-export const [locale, theme] = await Promise.all([
+export const [locale, syncCursor, theme] = await Promise.all([
   createAppState<'pl-PL' | 'en-GB'>('locale', 'pl-PL'), // TODO: Change to en-GB
+  createAppState<number>('syncCursor', 0),
   createAppState<'system' | 'light' | 'dark'>('theme', 'system'),
 ])

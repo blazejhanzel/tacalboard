@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useDatabase } from '@/composables/useDatabase'
+import { useBackup } from '@/composables/useBackup'
 import IconCheckRoundOutline from '@/components/icons/IconCheckRoundOutline.vue'
 import IconWarningOutline from '@/components/icons/IconWarningOutline.vue'
 
 const { t } = useI18n()
-const database = useDatabase()
+const database = useBackup()
 
 const importStatus = ref<'success' | 'error' | null>(null)
 
 async function importDatabaseFile() {
   importStatus.value = null
 
-  const status = await database.importFromFile()
+  const status = await database.upload()
 
   importStatus.value = status ? 'success' : 'error'
 }
@@ -41,7 +41,7 @@ async function importDatabaseFile() {
     <h6>{{ t('backupAndRestore.backupHeader') }}</h6>
     <p class="text-body-secondary">{{ t('backupAndRestore.backupHint') }}</p>
     <ul class="list-group">
-      <button class="list-group-item" @click="database.exportToFile">
+      <button class="list-group-item" @click="database.download">
         {{ t('backupAndRestore.backupButton') }}
       </button>
     </ul>
@@ -81,7 +81,7 @@ async function importDatabaseFile() {
     <ul class="list-group">
       <li class="list-group-item">
         <label for="importedFile" class="w-100">
-          {{ database.selectedFile.value?.name ?? t('common.selectFile') }}
+          {{ database.importFile.value?.name ?? t('common.selectFile') }}
         </label>
         <input
           type="file"
@@ -89,7 +89,7 @@ async function importDatabaseFile() {
           accept=".json,application/json"
           class="visually-hidden"
           @change="
-            database.selectedFile.value = ($event.target as HTMLInputElement).files?.[0] ?? null
+            database.importFile.value = ($event.target as HTMLInputElement).files?.[0] ?? null
           "
         />
       </li>
@@ -99,7 +99,7 @@ async function importDatabaseFile() {
         class="list-group-item"
         type="button"
         id="importFileButton"
-        :disabled="!database.selectedFile.value || !database.importMode.value"
+        :disabled="!database.importFile.value || !database.importMode.value"
         @click="importDatabaseFile"
       >
         {{ t('common.import') }}

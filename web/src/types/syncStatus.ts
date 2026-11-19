@@ -1,1 +1,0 @@
-export type SyncStatus = 'synced' | 'syncing' | 'not-synced' | 'sync-failed'

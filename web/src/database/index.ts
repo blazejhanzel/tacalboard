@@ -1,7 +1,12 @@
 // IndexedDB access is provided by Dexie.js library
 
 import { Dexie, type EntityTable } from 'dexie'
-import type { KeyValuePair, Note, SyncOperation } from '@tacalboard/shared'
+import type { Note, SyncOperation } from '@tacalboard/shared'
+
+interface KeyValuePair {
+  key: string,
+  value: string | number
+}
 
 export const db = new Dexie('tacalboard') as Dexie & {
   notes: EntityTable<Note, 'id'>

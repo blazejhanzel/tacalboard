@@ -1,9 +1,11 @@
 import { readonly, ref } from 'vue'
+import type { Table } from 'dexie'
 import { db } from '@/database'
 import { SyncRequestSchema } from '@tacalboard/shared'
 import type { Entity, Note, SyncOperation, SyncRequest } from '@tacalboard/shared'
-import type { SyncStatus } from '@/types/syncStatus'
-import type { Table } from 'dexie'
+import { syncCursor } from './useAppStates'
+
+export type SyncStatus = 'synced' | 'syncing' | 'not-synced' | 'sync-failed'
 
 const syncStatus = ref<SyncStatus>('synced')
 
@@ -38,7 +40,7 @@ async function prepareRequest(): Promise<SyncRequest> {
   const request: SyncRequest = {
     operations: await db.syncOperations.toArray(),
     notes: [],
-    syncCursor: Number((await db.appStates.get('syncCursor'))?.value ?? 0),
+    syncCursor: syncCursor.state.value,
   }
 
   for (const operation of request.operations ?? []) {
@@ -77,14 +79,8 @@ async function proceedResponse(response: Response): Promise<void> {
       await proceedIncomingOperations(data)
     }
 
-    // Set new syncCursor corelated with server response
-    await db.appStates.put({
-      key: 'syncCursor',
-      value: String(data.syncCursor),
-    })
+    syncCursor.set(data.syncCursor)
   })
-
-  // TODO: Usunąć wszystkie pola revision z baz i typów notatek
 }
 
 async function proceedIncomingOperations(request: SyncRequest): Promise<void> {
