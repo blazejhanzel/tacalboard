@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
-import { db } from "@/database/index.js";
+import { db } from "#/database/index.js";
 import { SyncRequestSchema } from "@tacalboard/shared";
 import type { Note, SyncOperation, SyncRequest } from "@tacalboard/shared";
 

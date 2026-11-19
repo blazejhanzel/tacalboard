@@ -1,4 +1,4 @@
-import { db } from "@/database/connection.js";
+import { db } from "../connection.js";
 
 export function setup() {
   db.exec(`

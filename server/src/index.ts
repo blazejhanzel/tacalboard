@@ -2,8 +2,8 @@ import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { join } from "node:path";
-import syncRoutes from "@/routes/sync.js";
-import statusRoutes from "@/routes/status.js";
+import syncRoutes from "./routes/sync.js";
+import statusRoutes from "./routes/status.js";
 
 const app = Fastify({
   logger: true,
