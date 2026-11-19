@@ -2,22 +2,17 @@ import { ref } from 'vue'
 import { db } from '@/database'
 import { registerOperation } from '@/database/syncOperations'
 import { BackupFileSchema, type BackupFile } from '@/schemas/backupFile'
+import { deleteNote, getAllNotes } from '@/database/notes'
 
 const importMode = ref<'replace' | 'append' | null>(null)
 const importFile = ref<File | null>(null)
 
 async function download() {
-  const tablesToExport = ['notes']
   const data: BackupFile = {
-    notes: [],
-  }
-
-  for (const tableName of tablesToExport) {
-    data.notes = await db.table(tableName).toArray()
+    notes: await getAllNotes(),
   }
 
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   const date = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
@@ -38,8 +33,9 @@ async function upload(): Promise<boolean> {
 
     await db.transaction('rw', db.notes, db.syncOperations, db.appStates, async () => {
       if (importMode.value === 'replace') {
-        await db.syncOperations.clear()
-        await db.notes.clear()
+        for (const note of await getAllNotes()) {
+          deleteNote(note.id)
+        }
       }
 
       for (const note of data.notes) {
@@ -49,6 +45,7 @@ async function upload(): Promise<boolean> {
           noteToPut.id = crypto.randomUUID()
         }
 
+        // TODO: Should be changes to use notes.ts crud operations
         await db.notes.put(noteToPut)
         await registerOperation('update', 'note', noteToPut.id)
       }

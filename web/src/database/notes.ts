@@ -7,6 +7,10 @@ export function observeNotes(): Observable<Note[]> {
   return liveQuery(() => db.notes.orderBy('modifiedAt').reverse().toArray())
 }
 
+export async function getAllNotes(): Promise<Note[]> {
+  return await db.notes.toArray()
+}
+
 export async function createNote(content: string) {
   const id = crypto.randomUUID()
   const now = new Date()
@@ -22,7 +26,7 @@ export async function createNote(content: string) {
 }
 
 export async function readNote(id: string): Promise<Note | undefined> {
-  return db.notes.get(id)
+  return await db.notes.get(id)
 }
 
 export async function updateNote(id: string, content: string) {

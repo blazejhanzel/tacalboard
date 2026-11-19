@@ -14,6 +14,12 @@ export async function registerOperation(
       .equals([entityType, entityId])
       .first()
 
+    const syncOperation: NewSyncOperation = {
+      operation,
+      entityType,
+      entityId,
+    }
+
     if (existing) {
       if (existing.operation === 'create' && operation === 'delete') {
         await db.syncOperations.delete(existing.id)
@@ -21,12 +27,6 @@ export async function registerOperation(
       }
 
       await db.syncOperations.delete(existing.id)
-    }
-
-    const syncOperation: NewSyncOperation = {
-      operation,
-      entityType,
-      entityId,
     }
 
     await db.syncOperations.add(syncOperation)
