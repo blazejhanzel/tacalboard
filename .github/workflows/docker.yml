@@ -78,7 +78,7 @@ jobs:
         uses: snok/container-retention-policy@v3.1.0
         with:
           account: user
-          token: ${{ secrets.GHCR_CLEANUP_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           image-names: "tacalboard"
           image-tags: "sha-* nightly"
           tag-selection: tagged
@@ -92,7 +92,7 @@ jobs:
         uses: snok/container-retention-policy@v3.1.0
         with:
           account: user
-          token: ${{ secrets.GHCR_CLEANUP_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           image-names: "tacalboard"
           tag-selection: untagged
           cut-off: 14d
