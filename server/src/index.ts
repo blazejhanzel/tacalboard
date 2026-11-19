@@ -14,8 +14,10 @@ const version = packageJson.version;
 const channel = process.env.BUILD_CHANNEL ?? "dev";
 const buildNumber = process.env.BUILD_NUMBER;
 const gitSha = process.env.GIT_SHA?.slice(0, 7);
-const __APP_VERSION__ =
-  buildNumber && gitSha
+const isRelease = process.env.IS_RELEASE === "true";
+const __APP_VERSION__ = isRelease
+  ? version
+  : buildNumber && gitSha
     ? `${version}-${channel}.${buildNumber}+${"g" + gitSha}`
     : `${version}-${channel}+${gitSha ? "g" + gitSha : "local"}`;
 

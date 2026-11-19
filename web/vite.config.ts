@@ -12,9 +12,12 @@ const version = packageJson.version
 const channel = process.env.BUILD_CHANNEL ?? 'dev'
 const buildNumber = process.env.BUILD_NUMBER
 const gitSha = process.env.GIT_SHA?.slice(0, 7)
-const __APP_VERSION__ = buildNumber && gitSha
-  ? `${version}-${channel}.${buildNumber}+${'g' + gitSha}`
-  : `${version}-${channel}+${gitSha ? 'g' + gitSha : 'local'}`
+const isRelease = process.env.IS_RELEASE === 'true'
+const __APP_VERSION__ = isRelease
+  ? version
+  : buildNumber && gitSha
+    ? `${version}-${channel}.${buildNumber}+${'g' + gitSha}`
+    : `${version}-${channel}+${gitSha ? 'g' + gitSha : 'local'}`
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -24,10 +27,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        navigateFallbackDenylist: [
-          /^\/api(?:\/|$)/,
-          /^\/docs(?:\/|$)/,
-        ]
+        navigateFallbackDenylist: [/^\/api(?:\/|$)/, /^\/docs(?:\/|$)/],
       },
       manifest: {
         name: 'Tacalboard',
@@ -41,16 +41,16 @@ export default defineConfig({
           {
             src: '/pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
             src: '/pwa-512x512.png',
             sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
-    })
+            type: 'image/png',
+          },
+        ],
+      },
+    }),
   ],
   resolve: {
     alias: {
@@ -58,14 +58,14 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_VERSION__: JSON.stringify(__APP_VERSION__)
+    __APP_VERSION__: JSON.stringify(__APP_VERSION__),
   },
   server: {
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8080/',
-        changeOrigin: true
-      }
-    }
-  }
+        changeOrigin: true,
+      },
+    },
+  },
 })

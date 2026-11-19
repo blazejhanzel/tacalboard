@@ -8,6 +8,7 @@ const syncRoutes: FastifyPluginAsync = async (app) => {
     const result = SyncRequestSchema.safeParse(request.body);
 
     if (!result.success) {
+      console.log(result.error.issues);
       return reply.code(400).send({
         error: "Invalid sync request",
         details: result.error.issues,
