@@ -159,7 +159,7 @@ function proceedOutgoingOperations(
         .get(change.entityId) as unknown as Note;
 
       if (note) {
-        response.notes.push(note);
+        response.notes!.push(note);
       }
     }
   }

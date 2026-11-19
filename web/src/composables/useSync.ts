@@ -55,7 +55,7 @@ async function prepareRequest(): Promise<SyncRequest> {
     }
   }
 
-  return request
+  return SyncRequestSchema.parse(request)
 }
 
 async function sendRequest(body: SyncRequest): Promise<Response> {
