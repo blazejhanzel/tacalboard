@@ -17,6 +17,10 @@ export default {
     restoreHint: 'Provides ability to import database from the .json file to the application.',
     importHint:
       'Select file to the import and click the button to import database to the application.',
+    importAlerts: {
+      success: 'Import succesfully completed',
+      error: 'An error occured durring import',
+    },
     importTypes: {
       replace: 'Replace existing database',
       append: 'Append to existing database',

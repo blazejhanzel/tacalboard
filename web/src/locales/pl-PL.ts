@@ -16,6 +16,10 @@ export default {
       'Pozwala pobrać aktualną kopię bazy danych do pliku, dzięki czemu możliwe będzie jej odtworzenie, gdy zajdzie taka potrzeba. W przypadku korzystania z aplikacji w trybie serverless, zaleca się tworzenie kopii każdorazowo po wgraniu lub edycji dużej ilości danych.',
     restoreHeader: 'Przywracanie z pliku',
     restoreHint: 'Pozwala zaimportować bazę danych z pliku .json do aplikacji.',
+    importAlerts: {
+      success: 'Poprawnie zaimportowano dane',
+      error: 'Wystąpił błąd podczas importowania',
+    },
     importHint:
       'Wskaż plik, który ma zostać zaimportowany, a następnie naciśnij przycisk importu, aby wczytać bazę danych do aplikacji.',
     importTypes: {

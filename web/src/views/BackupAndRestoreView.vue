@@ -2,8 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBackup } from '@/composables/useBackup'
-import IconCheckRoundOutline from '@/components/icons/IconCheckRoundOutline.vue'
-import IconWarningOutline from '@/components/icons/IconWarningOutline.vue'
+import Alert from '@/components/Alert.vue'
 
 const { t } = useI18n()
 const database = useBackup()
@@ -12,32 +11,18 @@ const importStatus = ref<'success' | 'error' | null>(null)
 
 async function importDatabaseFile() {
   importStatus.value = null
-
-  const status = await database.upload()
-
-  importStatus.value = status ? 'success' : 'error'
+  importStatus.value = (await database.upload()) ? 'success' : 'error'
 }
 </script>
 
 <template>
   <div class="container">
-    <div
-      v-if="importStatus === 'error'"
-      class="alert alert-warning alert-dismissible d-flex align-items-center"
-      role="alert"
-    >
-      <IconWarningOutline />
-      <span class="ms-2">An error occured durring import</span>
-    </div>
-    <div
-      v-else-if="importStatus === 'success'"
-      class="alert alert-success alert-dismissible d-flex align-items-center"
-      role="alert"
-    >
-      <IconCheckRoundOutline />
-      <span class="ms-2">Imported succesfully completed</span>
-    </div>
-
+    <Alert
+      v-if="importStatus"
+      :alert-type="importStatus"
+      :content="t('backupAndRestore.importAlerts.' + importStatus)"
+      :dismissible="false"
+    />
     <h6>{{ t('backupAndRestore.backupHeader') }}</h6>
     <p class="text-body-secondary">{{ t('backupAndRestore.backupHint') }}</p>
     <ul class="list-group">
