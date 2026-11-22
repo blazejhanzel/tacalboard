@@ -31,11 +31,14 @@ function getIcon(icon: ToastIcon) {
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
+      :style="{ opacity: toast.opacity }"
     >
       <div class="toast-content">
         <component v-if="toast.icon" :is="getIcon(toast.icon)" />
         <strong class="ms-2 me-auto">{{ toast.message }}</strong>
-        <!-- <button type="button" class="btn">Testowy przycisk</button> -->
+        <button v-if="toast.callback" type="button" class="btn" @click="toast.callback?.func()">
+          {{ toast.callback.label }}
+        </button>
         <button type="button" class="btn-close" @click="dismissToast(toast.id)" aria-label="Close">
           <IconCrossLarge />
         </button>
