@@ -7,11 +7,15 @@ const { t } = useI18n()
 const database = useBackup()
 const { showToast, dismissToast } = useToast()
 
-const lastToastId = null
+let lastToastId: string | null = null
 
 async function importDatabaseFile() {
+  if (lastToastId) {
+    dismissToast(lastToastId)
+  }
+
   const status = (await database.upload()) ? 'success' : 'error'
-  showToast(t('backupAndRestore.importAlerts.' + status), status)
+  lastToastId = showToast(t('backupAndRestore.importAlerts.' + status), status)
 }
 </script>
 

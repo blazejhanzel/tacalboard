@@ -30,11 +30,16 @@ export default {
   common: {
     cancel: 'Anuluj',
     delete: 'Usuń',
+    deletePermanent: 'Usuń trwale',
     edit: 'Edytuj',
     export: 'Eksportuj',
     import: 'Importuj',
+    restore: 'Przywróć',
     save: 'Zapisz',
     selectFile: 'Wybierz plik...',
+    trashed: 'Przeniesiono do kosza',
+    untrashed: 'Przywrócono z kosza',
+    undo: 'Cofnij',
   },
   dates: {
     today: 'Dzisiaj',
@@ -46,6 +51,8 @@ export default {
     deleteTitle: 'Usunąć notatkę?',
     deleteMessage: 'Czy na pewno chcesz usunąć tę notatkę? Tej operacji nie można cofnąć.',
     recentNotesSeparator: 'Ostatnie notatki',
+    recentlyDeletedSeparator: 'Ostatnio usunięte',
+    recentlyDeletedLink: 'Załaduj ostatnio usunięte',
   },
   header: {
     backupAndRestoreView: 'Kopia i przywracanie',

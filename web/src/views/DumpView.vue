@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, nextTick, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { Note } from '@tacalboard/shared'
-import { createNote, observeNotes } from '@/database/notes'
+import { useNotes } from '@/composables/useNotes'
 import NoteCard from '@/components/NoteCard.vue'
 import IconPaperPlane from '@/components/icons/IconPaperPlane.vue'
 import Separator from '@/components/Separator.vue'
 
 const { t } = useI18n()
+const { notes, createNote } = useNotes()
 
-const notes = ref<Note[]>([])
 const newNote = ref('')
 const isWritingDumpNote = ref(false)
 const isClickingSendButton = ref(false)
-
 const dumpTextarea = ref<HTMLTextAreaElement | null>(null)
-
-const notesSubscription = observeNotes().subscribe({
-  next: (value) => {
-    notes.value = value
-  },
-  error: (error) => {
-    console.error('Error when pulling notes from database:', error)
-  },
-})
+const showTrashed = ref(false)
+const activeNotes = computed(() =>
+  notes.value
+    .filter((note) => note.trashedAt == null)
+    .sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime()),
+)
+const trashedNotes = computed(() =>
+  notes.value
+    .filter((note) => note.trashedAt != null)
+    .sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime()),
+)
 
 async function addNote() {
   const content = newNote.value.trim()
@@ -62,10 +62,6 @@ function handleBlur() {
 onMounted(() => {
   autoResize()
 })
-
-onUnmounted(() => {
-  notesSubscription.unsubscribe()
-})
 </script>
 
 <template>
@@ -96,15 +92,23 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <Separator :text="t('dump.recentNotesSeparator')" style="margin-top: 2rem" />
     <div v-if="notes.length > 0" class="d-grid gap-3 pt-3 pb-3">
-      <NoteCard
-        v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
-        :key="note.id"
-        :id="note.id"
-        :content="note.content"
-        :date="note.modifiedAt"
-      />
+      <Separator :text="t('dump.recentNotesSeparator')" style="margin-top: 1rem" />
+      <NoteCard v-for="note in activeNotes" :key="note.id" :noteId="note.id" />
+      <template v-if="trashedNotes.length > 0">
+        <Separator :text="t('dump.recentlyDeletedSeparator')" />
+        <ul v-if="!showTrashed" class="list-group m-0">
+          <button class="list-group-item" type="button" @click="() => (showTrashed = !showTrashed)">
+            {{ t('dump.recentlyDeletedLink') }}
+          </button>
+        </ul>
+        <NoteCard
+          v-if="showTrashed"
+          v-for="note in trashedNotes"
+          :key="note.id"
+          :noteId="note.id"
+        />
+      </template>
     </div>
     <div
       v-else

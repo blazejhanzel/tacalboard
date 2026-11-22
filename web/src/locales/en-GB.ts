@@ -29,11 +29,16 @@ export default {
   common: {
     cancel: 'Cancel',
     delete: 'Delete',
+    deletePermanent: 'Delete permanently',
     edit: 'Edit',
     export: 'Export',
     import: 'Import',
+    restore: 'Restore',
     save: 'Save',
     selectFile: 'Select file...',
+    trashed: 'Moved to trash',
+    untrashed: 'Restored from trash',
+    undo: 'Undo',
   },
   dates: {
     today: 'Today',
@@ -45,6 +50,8 @@ export default {
     deleteTitle: 'Delete note?',
     deleteMessage: 'Are you sure you want to delete this note? This cannot be undone.',
     recentNotesSeparator: 'Recent Notes',
+    recentlyDeletedSeparator: 'Recently deleted',
+    recentlyDeletedLink: 'Load recently deleted',
   },
   header: {
     backupAndRestoreView: 'Backup and Restore',

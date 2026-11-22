@@ -4,7 +4,7 @@ import { Dexie, type EntityTable } from 'dexie'
 import type { Note, SyncOperation } from '@tacalboard/shared'
 
 interface KeyValuePair {
-  key: string,
+  key: string
   value: string | number
 }
 
@@ -33,3 +33,10 @@ db.version(2)
     const oldData = await tx.table('systemStatuses').toArray()
     await tx.table('appStates').bulkPut(oldData)
   })
+
+// Implemented trash and pin/mark
+db.version(3).stores({
+  appStates: 'key',
+  notes: 'id, createdAt, modifiedAt, trashedAt, pinned',
+  syncOperations: '++id, [entityType+entityId]',
+})

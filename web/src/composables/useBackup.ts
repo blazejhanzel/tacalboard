@@ -2,14 +2,16 @@ import { ref } from 'vue'
 import { db } from '@/database'
 import { registerOperation } from '@/database/syncOperations'
 import { BackupFileSchema, type BackupFile } from '@/schemas/backupFile'
-import { deleteNote, getAllNotes } from '@/database/notes'
+import { useNotes } from './useNotes'
 
 const importMode = ref<'replace' | 'append' | null>(null)
 const importFile = ref<File | null>(null)
 
-async function download() {
+function download() {
+  const { notes } = useNotes()
+
   const data: BackupFile = {
-    notes: await getAllNotes(),
+    notes: notes.value,
   }
 
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -25,6 +27,8 @@ async function download() {
 }
 
 async function upload(): Promise<boolean> {
+  const { deleteAllNotes } = useNotes()
+
   if (!importFile.value || !importMode.value) return false
 
   try {
@@ -33,9 +37,7 @@ async function upload(): Promise<boolean> {
 
     await db.transaction('rw', db.notes, db.syncOperations, db.appStates, async () => {
       if (importMode.value === 'replace') {
-        for (const note of await getAllNotes()) {
-          deleteNote(note.id)
-        }
+        deleteAllNotes()
       }
 
       for (const note of data.notes) {

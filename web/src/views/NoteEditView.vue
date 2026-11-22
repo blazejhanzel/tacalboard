@@ -2,11 +2,12 @@
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
-import { readNote, updateNote } from '@/database/notes'
+import { useNotes } from '@/composables/useNotes'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { updateNote, readNote } = useNotes()
 
 const noteContent = ref('')
 const textarea = ref<HTMLTextAreaElement | null>(null)
@@ -36,7 +37,7 @@ async function saveNote() {
 
   if (!content || content === latelySavedContent) return
 
-  await updateNote(id, content)
+  await updateNote(id, { content })
 
   latelySavedContent = content
 }

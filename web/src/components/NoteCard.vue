@@ -6,18 +6,21 @@ import MarkdownIt from 'markdown-it'
 import { tasklist } from '@mdit/plugin-tasklist'
 import AlertDialog from '@/components/AlertDialog.vue'
 import IconMoreSmall from '@/components/icons/IconMoreSmall.vue'
-import { updateNote, deleteNote } from '@/database/notes'
 import { locale } from '@/composables/useAppStates'
+import { useNotes } from '@/composables/useNotes'
+import { useToast } from '@/composables/useToast'
 
 const { t } = useI18n()
+const { updateNote, readNote, deleteNote, trashNote, untrashNote } = useNotes()
+const { showToast, dismissToast } = useToast()
 
 const props = defineProps<{
-  id: string
-  content: string
-  date: Date
+  noteId: string
 }>()
 
 const showRemoveDialog = ref(false)
+const note = readNote(props.noteId)
+const isTrashed = computed(() => note.value!.trashedAt != null)
 
 const dateFormats: Record<
   'today' | 'recent' | 'currentYear' | 'older',
@@ -49,50 +52,51 @@ const dateFormatted = (() => {
   const now = new Date()
 
   const isToday =
-    props.date.getFullYear() === now.getFullYear() &&
-    props.date.getMonth() === now.getMonth() &&
-    props.date.getDate() === now.getDate()
+    note.value!.modifiedAt.getFullYear() === now.getFullYear() &&
+    note.value!.modifiedAt.getMonth() === now.getMonth() &&
+    note.value!.modifiedAt.getDate() === now.getDate()
 
   if (isToday) {
-    const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(props.date)
+    const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(
+      note.value!.modifiedAt,
+    )
 
     return `${t('dates.today')}, ${time}`
   } else {
     const isYesterday =
-      props.date.getFullYear() === now.getFullYear() &&
-      props.date.getMonth() === now.getMonth() &&
-      props.date.getDate() === now.getDate() - 1
+      note.value!.modifiedAt.getFullYear() === now.getFullYear() &&
+      note.value!.modifiedAt.getMonth() === now.getMonth() &&
+      note.value!.modifiedAt.getDate() === now.getDate() - 1
 
     if (isYesterday) {
-      const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(props.date)
+      const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(
+        note.value!.modifiedAt,
+      )
 
       return `${t('dates.yesterday')}, ${time}`
     }
   }
 
-  const diff = now.getTime() - props.date.getTime()
+  const diff = now.getTime() - note.value!.modifiedAt.getTime()
   const sevenDays = 7 * 24 * 60 * 60 * 1000
 
   let format: Intl.DateTimeFormatOptions
 
   if (diff >= 0 && diff < sevenDays) {
     format = dateFormats.recent
-  } else if (props.date.getFullYear() === now.getFullYear()) {
+  } else if (note.value!.modifiedAt.getFullYear() === now.getFullYear()) {
     format = dateFormats.currentYear
   } else {
     format = dateFormats.older
   }
 
-  return new Intl.DateTimeFormat(locale.state.value, format).format(props.date)
+  return new Intl.DateTimeFormat(locale.state.value, format).format(note.value!.modifiedAt)
 })()
 
-const md = new MarkdownIt({
-  breaks: true,
-}).use(tasklist as any, {
-  disabled: false,
-})
+const md = new MarkdownIt({ breaks: true }).use(tasklist as any, { disabled: false })
+const html = computed(() => md.render(note.value!.content))
 
-const html = computed(() => md.render(props.content))
+let lastToastId: string | null = null
 
 function handleTaskChange(event: Event) {
   const target = event.target
@@ -109,7 +113,7 @@ function handleTaskChange(event: Event) {
 }
 
 async function toggleTask(taskIndex: number, checked: boolean) {
-  const lines = props.content.split('\n')
+  const lines = note.value!.content.split('\n')
 
   let currentIndex = 0
 
@@ -129,15 +133,35 @@ async function toggleTask(taskIndex: number, checked: boolean) {
 
   const content = lines.join('\n')
 
-  await updateNote(props.id, content)
+  await updateNote(note.value!.id, { content })
 }
 
 function askRemove() {
   showRemoveDialog.value = true
 }
 
+async function handleTrashEvent() {
+  if (lastToastId) {
+    dismissToast(lastToastId)
+  }
+
+  if (isTrashed.value) {
+    untrashNote(note.value!.id)
+    lastToastId = showToast(t('common.untrashed'), null, {
+      func: () => trashNote(note.value!.id),
+      label: t('common.undo'),
+    })
+  } else {
+    trashNote(note.value!.id)
+    lastToastId = showToast(t('common.trashed'), null, {
+      func: () => untrashNote(note.value!.id),
+      label: t('common.undo'),
+    })
+  }
+}
+
 async function removeNote() {
-  await deleteNote(props.id)
+  await deleteNote(note.value!.id)
   showRemoveDialog.value = false
 }
 </script>
@@ -160,21 +184,35 @@ async function removeNote() {
             <IconMoreSmall />
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li>
+            <li v-if="!isTrashed">
               <RouterLink
                 class="dropdown-item"
                 :to="{
                   name: 'note-edit',
-                  params: { id: props.id },
+                  params: { id: note!.id },
                 }"
               >
                 {{ t('common.edit') }}
               </RouterLink>
             </li>
-            <li>
-              <button class="dropdown-item adw-destructive-action" type="button" @click="askRemove">
-                {{ t('common.delete') }}
-              </button>
+            <li v-if="isTrashed" class="dropdown-item" type="button" @click="handleTrashEvent">
+              {{ t('common.restore') }}
+            </li>
+            <li
+              v-else
+              class="dropdown-item adw-destructive-action"
+              type="button"
+              @click="handleTrashEvent"
+            >
+              {{ t('common.delete') }}
+            </li>
+            <li
+              v-if="isTrashed"
+              class="dropdown-item adw-destructive-action"
+              type="button"
+              @click="askRemove"
+            >
+              {{ t('common.deletePermanent') }}
             </li>
           </ul>
         </div>
@@ -183,6 +221,7 @@ async function removeNote() {
     <div class="card-body pt-0" v-html="html" @change="handleTaskChange"></div>
   </div>
   <AlertDialog
+    v-if="isTrashed"
     :visible="showRemoveDialog"
     :title="t('dump.deleteTitle')"
     :message="t('dump.deleteMessage')"
