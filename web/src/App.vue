@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import Header from '@/components/Header.vue'
 import Navbar from '@/components/Navbar.vue'
+import ToastContainer from './components/ToastContainer.vue'
 
 const route = useRoute()
 
@@ -54,6 +55,7 @@ onUnmounted(() => {
       <RouterView />
     </main>
 
+    <ToastContainer />
     <component :is="bottomBarComponent" v-if="showBottomBar" />
   </div>
 </template>

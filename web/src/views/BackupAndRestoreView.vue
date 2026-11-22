@@ -1,28 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBackup } from '@/composables/useBackup'
-import Alert from '@/components/Alert.vue'
+import { useToast } from '@/composables/useToast'
 
 const { t } = useI18n()
 const database = useBackup()
+const { showToast, dismissToast } = useToast()
 
-const importStatus = ref<'success' | 'error' | null>(null)
+const lastToastId = null
 
 async function importDatabaseFile() {
-  importStatus.value = null
-  importStatus.value = (await database.upload()) ? 'success' : 'error'
+  const status = (await database.upload()) ? 'success' : 'error'
+  showToast(t('backupAndRestore.importAlerts.' + status), status)
 }
 </script>
 
 <template>
   <div class="container">
-    <Alert
-      v-if="importStatus"
-      :alert-type="importStatus"
-      :content="t('backupAndRestore.importAlerts.' + importStatus)"
-      :dismissible="false"
-    />
     <h6>{{ t('backupAndRestore.backupHeader') }}</h6>
     <p class="text-body-secondary">{{ t('backupAndRestore.backupHint') }}</p>
     <ul class="list-group">

@@ -83,6 +83,9 @@
   --adw-dialog-bg-color: #fafafb;
   --adw-dialog-fg-color: rgb(0 0 6 / 80%);
   --adw-dialog-overlay: rgb(0 0 0 / 50%);
+  --adw-toast-bg-color: #4d4d4d;
+  --adw-toast-fg-color: #ededed;
+  --adw-toast-btn-color: #5e5e5e;
 }
 
 [data-custom-theme='dark'] {
@@ -109,4 +112,7 @@
   --adw-dialog-bg-color: #36363a;
   --adw-dialog-fg-color: #ffffff;
   --adw-dialog-overlay: rgb(0 0 0 / 50%);
+  --adw-toast-bg-color: #060607;
+  --adw-toast-fg-color: #e6e6e6;
+  --adw-toast-btn-color: #1d1d1e;
 }

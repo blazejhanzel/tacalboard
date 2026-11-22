@@ -18,8 +18,8 @@ export default {
     importHint:
       'Select file to the import and click the button to import database to the application.',
     importAlerts: {
-      success: 'Import succesfully completed',
-      error: 'An error occured durring import',
+      success: 'Imported succesfully',
+      error: 'Import error occured',
     },
     importTypes: {
       replace: 'Replace existing database',

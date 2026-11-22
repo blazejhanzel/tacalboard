@@ -17,8 +17,8 @@ export default {
     restoreHeader: 'Przywracanie z pliku',
     restoreHint: 'Pozwala zaimportować bazę danych z pliku .json do aplikacji.',
     importAlerts: {
-      success: 'Poprawnie zaimportowano dane',
-      error: 'Wystąpił błąd podczas importowania',
+      success: 'Pomyślnie zaimportowano',
+      error: 'Wystąpił błąd importowania',
     },
     importHint:
       'Wskaż plik, który ma zostać zaimportowany, a następnie naciśnij przycisk importu, aby wczytać bazę danych do aplikacji.',
