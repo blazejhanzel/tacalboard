@@ -86,7 +86,7 @@ onBeforeRouteLeave(async () => {
       ref="textarea"
       class="form-control p-3 border-0 shadow-none w-100 align-self-center"
       @input="scheduleSave"
-      :placeholder="t('notes.composerPlaceholder')"
+      :placeholder="t('dump.composerPlaceholder')"
     >
     </textarea>
   </div>

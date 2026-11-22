@@ -184,8 +184,8 @@ async function removeNote() {
   </div>
   <AlertDialog
     :visible="showRemoveDialog"
-    :title="t('notes.deleteTitle')"
-    :message="t('notes.deleteMessage')"
+    :title="t('dump.deleteTitle')"
+    :message="t('dump.deleteMessage')"
     @confirm="removeNote"
     @cancel="showRemoveDialog = false"
   />

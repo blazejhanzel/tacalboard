@@ -39,6 +39,13 @@ export default {
     today: 'Today',
     yesterday: 'Yesterday',
   },
+  dump: {
+    composerPlaceholder: 'Capture a thought...',
+    emptyPlaceholder: 'Nothing to show, start with capturing first thought',
+    deleteTitle: 'Delete note?',
+    deleteMessage: 'Are you sure you want to delete this note? This cannot be undone.',
+    recentNotesSeparator: 'Recent Notes',
+  },
   header: {
     backupAndRestoreView: 'Backup and Restore',
     noteEditView: 'Editing note',
@@ -47,11 +54,5 @@ export default {
   navbar: {
     dump: 'Dump',
     notepad: 'Notepad',
-  },
-  notes: {
-    composerPlaceholder: 'Capture a thought...',
-    emptyPlaceholder: 'Nothing to show, start with capturing first thought',
-    deleteTitle: 'Delete note?',
-    deleteMessage: 'Are you sure you want to delete this note? This cannot be undone.',
   },
 }

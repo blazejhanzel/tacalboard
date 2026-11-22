@@ -5,6 +5,7 @@ import type { Note } from '@tacalboard/shared'
 import { createNote, observeNotes } from '@/database/notes'
 import NoteCard from '@/components/NoteCard.vue'
 import IconPaperPlane from '@/components/icons/IconPaperPlane.vue'
+import Separator from '@/components/Separator.vue'
 
 const { t } = useI18n()
 
@@ -81,7 +82,7 @@ onUnmounted(() => {
           @keydown.ctrl.enter.prevent="addNote"
           @focus="isWritingDumpNote = true"
           @blur="handleBlur"
-          :placeholder="t('notes.composerPlaceholder')"
+          :placeholder="t('dump.composerPlaceholder')"
         >
         </textarea>
         <div class="flex-shrink-1 align-self-center p-3">
@@ -95,7 +96,8 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div v-if="notes.length > 0" class="d-grid gap-3 mt-3 pt-3 pb-3">
+    <Separator :text="t('dump.recentNotesSeparator')" style="margin-top: 2rem" />
+    <div v-if="notes.length > 0" class="d-grid gap-3 pt-3 pb-3">
       <NoteCard
         v-for="note in notes.sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())"
         :key="note.id"
@@ -110,7 +112,7 @@ onUnmounted(() => {
       class="d-flex align-items-center gap-3 pt-3 pb-3 text-center"
     >
       <div class="m-auto">
-        {{ t('notes.emptyPlaceholder') }}
+        {{ t('dump.emptyPlaceholder') }}
       </div>
     </div>
   </div>
