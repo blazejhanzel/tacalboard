@@ -51,7 +51,7 @@ function goBack() {
           <button
             v-if="showSyncStatus"
             class="btn"
-            :disabled="!appMetadata.productionBuild"
+            :disabled="appMetadata.productionBuild"
             @click="sync.sync"
           >
             <IconCloudFilled v-if="sync.syncStatus.value === 'synced'" />
