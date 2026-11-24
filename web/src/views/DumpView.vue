@@ -13,17 +13,28 @@ const newNote = ref('')
 const isWritingDumpNote = ref(false)
 const isClickingSendButton = ref(false)
 const dumpTextarea = ref<HTMLTextAreaElement | null>(null)
+const pinnedSection = ref<InstanceType<typeof Separator> | null>(null)
 const showTrashed = ref(false)
 const activeNotes = computed(() =>
   notes.value
     .filter((note) => note.trashedAt == null)
-    .sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime()),
+    .sort((a, b) => {
+      if (a.pinnedAt != null && b.pinnedAt == null) return -1
+      if (a.pinnedAt == null && b.pinnedAt != null) return 1
+
+      const dateA = a.pinnedAt ?? a.modifiedAt
+      const dateB = b.pinnedAt ?? b.modifiedAt
+
+      return dateB.getTime() - dateA.getTime()
+    }),
 )
 const trashedNotes = computed(() =>
   notes.value
     .filter((note) => note.trashedAt != null)
     .sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime()),
 )
+
+// TODO: Spiąc cztery tablice do max dwóch trashed i domyślna: posortowana według daty przypięcia a jeśli jest null to według daty modyfikacji
 
 async function addNote() {
   const content = newNote.value.trim()
@@ -57,6 +68,11 @@ function handleBlur() {
   }
 
   isWritingDumpNote.value = false
+}
+
+async function handleNotePinned() {
+  await nextTick()
+  pinnedSection.value?.scrollIntoView()
 }
 
 onMounted(() => {
@@ -93,8 +109,19 @@ onMounted(() => {
       </div>
     </div>
     <div v-if="notes.length > 0" class="d-grid gap-3 pt-3 pb-3">
-      <Separator :text="t('dump.recentNotesSeparator')" style="margin-top: 1rem" />
-      <NoteCard v-for="note in activeNotes" :key="note.id" :noteId="note.id" />
+      <div></div>
+      <Separator
+        v-show="activeNotes.some((note) => note.pinnedAt != null)"
+        ref="pinnedSection"
+        :text="t('dump.pinnedNotesSeparator')"
+      />
+      <template v-for="(note, index) in activeNotes" :key="note.id">
+        <Separator
+          v-if="note.pinnedAt == null && (index === 0 || activeNotes[index - 1]?.pinnedAt != null)"
+          :text="t('dump.recentNotesSeparator')"
+        />
+        <NoteCard :noteId="note.id" @pinned="handleNotePinned" />
+      </template>
       <template v-if="trashedNotes.length > 0">
         <Separator :text="t('dump.recentlyDeletedSeparator')" />
         <ul v-if="!showTrashed" class="list-group m-0">

@@ -37,6 +37,6 @@ db.version(2)
 // Implemented trash and pin/mark
 db.version(3).stores({
   appStates: 'key',
-  notes: 'id, createdAt, modifiedAt, trashedAt, pinned',
+  notes: 'id, createdAt, modifiedAt, trashedAt, pinnedAt',
   syncOperations: '++id, [entityType+entityId]',
 })

@@ -3,7 +3,7 @@ import { EntitySchema } from "./entity.js";
 
 export const NoteSchema = EntitySchema.extend({
   content: z.string(),
-  pinned: z.number().nullable(),
+  pinnedAt: z.coerce.date().nullable(),
 });
 
 export type Note = z.infer<typeof NoteSchema>;

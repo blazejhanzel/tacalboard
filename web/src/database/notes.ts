@@ -16,7 +16,7 @@ export async function createNote(content: string) {
     createdAt: now,
     modifiedAt: now,
     trashedAt: null,
-    pinned: null,
+    pinnedAt: null,
   }
 
   await db.notes.add(note)
@@ -29,11 +29,14 @@ export async function readNote(id: string): Promise<Note | undefined> {
 
 export async function updateNote(
   id: string,
-  changes: Partial<Pick<Note, 'content' | 'pinned' | 'trashedAt'>>,
+  changes: Partial<Pick<Note, 'content' | 'pinnedAt' | 'trashedAt'>>,
 ) {
+  const excludedFields = ['pinnedAt'] as const
+  const shouldUpdateModifiedAt = !excludedFields.some((field) => field in changes)
+
   await db.notes.update(id, {
     ...changes,
-    modifiedAt: new Date(),
+    ...(shouldUpdateModifiedAt && { modifiedAt: new Date() }),
   })
 
   await registerOperation('update', 'note', id)

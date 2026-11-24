@@ -17,14 +17,20 @@ export function useNotes() {
   return {
     notes,
     createNote,
-    readNote: (id: string): ComputedRef<Note | null> =>
-      computed(() => notes.value.find((note) => note.id === id) ?? null),
+    readNote: (id: string): ComputedRef<Note> =>
+      computed(() => {
+        const note = notes.value.find((note) => note.id === id) ?? null
+        if (!note) throw new Error(`Note ${id} not found`)
+        return note
+      }),
     updateNote,
     deleteNote,
-    trashNote: async (id: string) => await updateNote(id, { trashedAt: new Date() }),
-    untrashNote: async (id: string) => await updateNote(id, { trashedAt: null }),
     deleteAllNotes: async () => {
       for (const note of notes.value) await deleteNote(note.id)
     },
+    pinNote: async (id: string) => await updateNote(id, { pinnedAt: new Date() }),
+    unpinNote: async (id: string) => await updateNote(id, { pinnedAt: null }),
+    trashNote: async (id: string) => await updateNote(id, { trashedAt: new Date() }),
+    untrashNote: async (id: string) => await updateNote(id, { trashedAt: null }),
   }
 }

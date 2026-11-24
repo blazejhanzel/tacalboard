@@ -3,7 +3,7 @@ import { ref } from 'vue'
 export type ToastIcon = 'success' | 'error' | 'info' | 'warning' | null
 
 export interface ToastCallback {
-  func: () => void
+  func: () => void | Promise<void>
   label: string
 }
 
@@ -28,8 +28,8 @@ function showToast(
 ): string {
   const id = crypto.randomUUID()
   const callbackWithDismiss = {
-    func: () => {
-      callback?.func()
+    func: async () => {
+      await callback?.func()
       dismissToast(id)
     },
     label: callback?.label ?? '',

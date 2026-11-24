@@ -45,15 +45,15 @@ async function saveNote() {
 onMounted(async () => {
   const id = route.params.id as string
 
-  const note = await readNote(id)
+  const note = readNote(id)
 
   if (!note) {
     await router.replace('/')
     return
   }
 
-  noteContent.value = note.content
-  latelySavedContent = note.content
+  noteContent.value = note.value.content
+  latelySavedContent = note.value.content
 
   await nextTick()
 

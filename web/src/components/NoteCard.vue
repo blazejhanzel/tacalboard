@@ -11,16 +11,21 @@ import { useNotes } from '@/composables/useNotes'
 import { useToast } from '@/composables/useToast'
 
 const { t } = useI18n()
-const { updateNote, readNote, deleteNote, trashNote, untrashNote } = useNotes()
+const { updateNote, readNote, deleteNote, pinNote, unpinNote, trashNote, untrashNote } = useNotes()
 const { showToast, dismissToast } = useToast()
 
 const props = defineProps<{
   noteId: string
 }>()
 
+const emit = defineEmits<{
+  pinned: []
+}>()
+
 const showRemoveDialog = ref(false)
 const note = readNote(props.noteId)
-const isTrashed = computed(() => note.value!.trashedAt != null)
+const isPinned = computed(() => note.value.pinnedAt != null)
+const isTrashed = computed(() => note.value.trashedAt != null)
 
 const dateFormats: Record<
   'today' | 'recent' | 'currentYear' | 'older',
@@ -52,49 +57,49 @@ const dateFormatted = (() => {
   const now = new Date()
 
   const isToday =
-    note.value!.modifiedAt.getFullYear() === now.getFullYear() &&
-    note.value!.modifiedAt.getMonth() === now.getMonth() &&
-    note.value!.modifiedAt.getDate() === now.getDate()
+    note.value.modifiedAt.getFullYear() === now.getFullYear() &&
+    note.value.modifiedAt.getMonth() === now.getMonth() &&
+    note.value.modifiedAt.getDate() === now.getDate()
 
   if (isToday) {
     const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(
-      note.value!.modifiedAt,
+      note.value.modifiedAt,
     )
 
     return `${t('dates.today')}, ${time}`
   } else {
     const isYesterday =
-      note.value!.modifiedAt.getFullYear() === now.getFullYear() &&
-      note.value!.modifiedAt.getMonth() === now.getMonth() &&
-      note.value!.modifiedAt.getDate() === now.getDate() - 1
+      note.value.modifiedAt.getFullYear() === now.getFullYear() &&
+      note.value.modifiedAt.getMonth() === now.getMonth() &&
+      note.value.modifiedAt.getDate() === now.getDate() - 1
 
     if (isYesterday) {
       const time = new Intl.DateTimeFormat(locale.state.value, dateFormats.today).format(
-        note.value!.modifiedAt,
+        note.value.modifiedAt,
       )
 
       return `${t('dates.yesterday')}, ${time}`
     }
   }
 
-  const diff = now.getTime() - note.value!.modifiedAt.getTime()
+  const diff = now.getTime() - note.value.modifiedAt.getTime()
   const sevenDays = 7 * 24 * 60 * 60 * 1000
 
   let format: Intl.DateTimeFormatOptions
 
   if (diff >= 0 && diff < sevenDays) {
     format = dateFormats.recent
-  } else if (note.value!.modifiedAt.getFullYear() === now.getFullYear()) {
+  } else if (note.value.modifiedAt.getFullYear() === now.getFullYear()) {
     format = dateFormats.currentYear
   } else {
     format = dateFormats.older
   }
 
-  return new Intl.DateTimeFormat(locale.state.value, format).format(note.value!.modifiedAt)
+  return new Intl.DateTimeFormat(locale.state.value, format).format(note.value.modifiedAt)
 })()
 
 const md = new MarkdownIt({ breaks: true }).use(tasklist as any, { disabled: false })
-const html = computed(() => md.render(note.value!.content))
+const html = computed(() => md.render(note.value.content))
 
 let lastToastId: string | null = null
 
@@ -113,7 +118,7 @@ function handleTaskChange(event: Event) {
 }
 
 async function toggleTask(taskIndex: number, checked: boolean) {
-  const lines = note.value!.content.split('\n')
+  const lines = note.value.content.split('\n')
 
   let currentIndex = 0
 
@@ -133,11 +138,20 @@ async function toggleTask(taskIndex: number, checked: boolean) {
 
   const content = lines.join('\n')
 
-  await updateNote(note.value!.id, { content })
+  await updateNote(note.value.id, { content })
 }
 
 function askRemove() {
   showRemoveDialog.value = true
+}
+
+async function handlePinEvent() {
+  if (isPinned.value) {
+    await unpinNote(note.value.id)
+  } else {
+    await pinNote(note.value.id)
+    emit('pinned')
+  }
 }
 
 async function handleTrashEvent() {
@@ -146,22 +160,22 @@ async function handleTrashEvent() {
   }
 
   if (isTrashed.value) {
-    untrashNote(note.value!.id)
+    await untrashNote(note.value.id)
     lastToastId = showToast(t('common.untrashed'), null, {
-      func: () => trashNote(note.value!.id),
+      func: async () => await trashNote(note.value.id),
       label: t('common.undo'),
     })
   } else {
-    trashNote(note.value!.id)
+    await trashNote(note.value.id)
     lastToastId = showToast(t('common.trashed'), null, {
-      func: () => untrashNote(note.value!.id),
+      func: async () => await untrashNote(note.value.id),
       label: t('common.undo'),
     })
   }
 }
 
 async function removeNote() {
-  await deleteNote(note.value!.id)
+  await deleteNote(note.value.id)
   showRemoveDialog.value = false
 }
 </script>
@@ -184,17 +198,22 @@ async function removeNote() {
             <IconMoreSmall />
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li v-if="!isTrashed">
-              <RouterLink
-                class="dropdown-item"
-                :to="{
-                  name: 'note-edit',
-                  params: { id: note!.id },
-                }"
-              >
-                {{ t('common.edit') }}
-              </RouterLink>
-            </li>
+            <template v-if="!isTrashed">
+              <li class="dropdown-item" type="button" @click="handlePinEvent">
+                {{ isPinned ? t('common.unpin') : t('common.pin') }}
+              </li>
+              <li>
+                <RouterLink
+                  class="dropdown-item"
+                  :to="{
+                    name: 'note-edit',
+                    params: { id: note!.id },
+                  }"
+                >
+                  {{ t('common.edit') }}
+                </RouterLink>
+              </li>
+            </template>
             <li v-if="isTrashed" class="dropdown-item" type="button" @click="handleTrashEvent">
               {{ t('common.restore') }}
             </li>
